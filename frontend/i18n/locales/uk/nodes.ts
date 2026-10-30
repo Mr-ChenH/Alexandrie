@@ -3,6 +3,7 @@ export default {
     copyPublicLink: 'Копіювати публічне посилання',
     editMeta: 'Редагувати метадані',
     exportAsMarkdown: 'Експортувати як Markdown',
+    exportAsPdf: 'Експортувати як PDF',
     managePermissions: 'Керувати правами доступу',
     newDocument: '+ Створити новий документ',
     publicLink: 'Публічне посилання',
@@ -115,6 +116,28 @@ export default {
 
   notifications: {
     linkCopied: 'Посилання скопійовано в буфер обміну',
+  },
+
+  pdf: {
+    description: 'Створіть PDF нотатки, щоб зберегти її або поділитися.',
+    download: 'Завантажити PDF',
+    failed: 'Не вдалося створити PDF. Спробуйте ще раз.',
+    generate: 'Створити PDF',
+    generating: 'Створення PDF…',
+    imageUnavailable: 'Зображення недоступне',
+    includeDescription: 'Додати опис',
+    landscape: 'Альбомна',
+    missingImages: 'Не вдалося додати {count} зображень. Перевірте попередній перегляд.',
+    orientation: 'Орієнтація',
+    paperSize: 'Розмір паперу',
+    portrait: 'Книжкова',
+    privateNote: 'Експорт не змінює права доступу до цієї нотатки.',
+    progress: 'Створення сторінки {page} із {total}…',
+    ready: 'PDF готовий · {count} сторінок',
+    share: 'Поділитися PDF',
+    shareFailed: 'Не вдалося поділитися PDF. Ви можете завантажити файл.',
+    shareFallback: 'Завантажте PDF, щоб поділитися через інший застосунок.',
+    title: 'Поділитися та експортувати',
   },
 
   // From the shared_target api (PWA)

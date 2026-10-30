@@ -2,7 +2,7 @@ export default {
   actions: {
     import: '匯入',
     joinWorkspace: '加入工作區',
-    newDocument: '+ 新增文件',
+    newDocument: '新增文件',
     newWorkspace: '新增工作區',
   },
 

@@ -1,9 +1,9 @@
 <template>
   <div v-if="hasChildren">
     <SidebarItem :level="level" :item="item" class="collapse-header doc">
-      <svg :class="{ rotated: !isExpanded }" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" @click="toggleShow">
-        <path d="M480-345 240-585l56-56 184 184 184-184 56 56-240 240Z" />
-      </svg>
+      <button class="collapse-toggle" :class="{ rotated: !isExpanded }" :aria-label="item.label" :aria-expanded="isExpanded" @click.stop="toggleShow">
+        <Icon name="nav_arrow" display="sm" />
+      </button>
     </SidebarItem>
     <template v-if="isExpanded">
       <div v-for="child in children" :key="child.id" class="collapse-body" style="margin-left: 15px">
@@ -31,25 +31,24 @@ const toggleShow = () => nodesTree.toggleExpand(props.item.id);
 </script>
 
 <style lang="scss" scoped>
-.collapse-header {
-  svg {
-    fill: var(--text-body);
+.collapse-toggle {
+  display: flex;
+  flex-shrink: 0;
+  justify-content: center;
+  align-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 3px;
+  color: var(--text-secondary);
+  transition: transform $transition-fast;
 
-    &.rotated {
-      transform: rotate(-90deg);
-    }
-  }
-}
-
-.doc {
-  svg {
-    opacity: 0;
+  &.rotated {
+    transform: rotate(-90deg);
   }
 
   &:hover {
-    svg {
-      opacity: 1;
-    }
+    color: var(--text-primary);
+    background: var(--surface-transparent);
   }
 }
 </style>

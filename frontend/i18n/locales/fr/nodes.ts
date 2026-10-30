@@ -3,6 +3,7 @@ export default {
     copyPublicLink: 'Copier le lien public',
     editMeta: 'Modifier les métadonnées',
     exportAsMarkdown: 'Exporter en Markdown',
+    exportAsPdf: 'Exporter en PDF',
     managePermissions: 'Gérer les permissions',
     newDocument: '+ Créer un nouveau document',
     publicLink: 'Lien public',
@@ -115,6 +116,28 @@ export default {
 
   notifications: {
     linkCopied: 'Lien copié dans le presse-papiers',
+  },
+
+  pdf: {
+    description: 'Créez un PDF de votre note pour la conserver ou la partager.',
+    download: 'Télécharger le PDF',
+    failed: 'Impossible de créer le PDF. Veuillez réessayer.',
+    generate: 'Créer le PDF',
+    generating: 'Création du PDF…',
+    imageUnavailable: 'Image indisponible',
+    includeDescription: 'Inclure la description',
+    landscape: 'Paysage',
+    missingImages: '{count} image(s) non incluse(s). Vérifiez l’aperçu avant de partager.',
+    orientation: 'Orientation',
+    paperSize: 'Format du papier',
+    portrait: 'Portrait',
+    privateNote: 'Exporter un fichier ne modifie pas les autorisations de cette note.',
+    progress: 'Création de la page {page} sur {total}…',
+    ready: 'PDF prêt · {count} page(s)',
+    share: 'Partager le PDF',
+    shareFailed: 'Impossible de partager le PDF. Vous pouvez le télécharger.',
+    shareFallback: 'Téléchargez le PDF pour le partager avec une autre application.',
+    title: 'Partager et exporter',
   },
 
   // From the shared_target api (PWA)

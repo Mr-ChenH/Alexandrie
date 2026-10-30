@@ -1,0 +1,162 @@
+/* Used only inside the isolated PDF frame; imported as a string. */
+html,
+body {
+  width: 100%;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  color: #25232d;
+  background: #fff;
+  color-scheme: light;
+}
+
+.pdf-document {
+  --surface-base: #fff;
+  --surface-raised: #f4f3ef;
+  --surface-raised-light: #f8f7f4;
+  --surface-card: #fff;
+  --surface-overlay: #eeede8;
+  --text-body: #37353e;
+  --text-primary: #25232d;
+  --text-secondary: #706c7a;
+  --text-muted: #706c7a;
+  --border: #dedbd4;
+  --primary: #6254c7;
+  --primary-bg: #efecfa;
+
+  display: flow-root;
+  width: 100%;
+  margin: 0;
+  padding: 0 2px;
+  font-family: Inter, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-size: 15px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+.pdf-title {
+  margin: 0 0 12px;
+  padding: 0;
+  font-size: 30px;
+  line-height: 1.4;
+  color: #25232d;
+}
+
+.pdf-description {
+  margin: 0 0 24px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid #dedbd4;
+  color: #706c7a;
+}
+
+.pdf-document .document-content {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.pdf-document pre,
+.pdf-document pre code {
+  max-width: 100%;
+  color: #37353e;
+  word-break: normal;
+  white-space: pre-wrap;
+  background: #f4f3ef;
+  overflow-wrap: anywhere;
+}
+
+.pdf-document .hljs-comment,
+.pdf-document .hljs-quote {
+  color: #706c7a;
+}
+
+.pdf-document .hljs-keyword,
+.pdf-document .hljs-doctag,
+.pdf-document .hljs-name,
+.pdf-document .hljs-selector-tag {
+  color: #6254c7;
+}
+
+.pdf-document .hljs-string,
+.pdf-document .hljs-addition,
+.pdf-document .hljs-code,
+.pdf-document .hljs-bullet {
+  color: #276f4d;
+}
+
+.pdf-document .hljs-number,
+.pdf-document .hljs-regexp,
+.pdf-document .hljs-operator,
+.pdf-document .hljs-symbol {
+  color: #9a512a;
+}
+
+.pdf-document .hljs-title,
+.pdf-document .hljs-meta,
+.pdf-document .hljs-built_in,
+.pdf-document .hljs-type,
+.pdf-document .hljs-literal {
+  color: #356aa0;
+}
+
+.pdf-document .hljs-variable,
+.pdf-document .hljs-attribute,
+.pdf-document .hljs-attr,
+.pdf-document .hljs-deletion {
+  color: #a43d52;
+}
+
+.pdf-document .hljs-tag,
+.pdf-document .hljs-punctuation {
+  color: #37353e;
+}
+
+.pdf-document pre {
+  display: block;
+  padding: 12px;
+}
+
+.pdf-document pre.mermaid {
+  padding: 0;
+  background: transparent;
+}
+
+.pdf-document img,
+.pdf-document svg {
+  max-width: 100%;
+  max-height: var(--pdf-page-height);
+  object-fit: contain;
+}
+
+.pdf-document img {
+  height: auto;
+}
+
+.pdf-document table {
+  width: 100%;
+  max-width: 100%;
+  table-layout: fixed;
+}
+
+.pdf-document th,
+.pdf-document td {
+  overflow-wrap: anywhere;
+}
+
+.pdf-document .katex-display {
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.pdf-document a {
+  color: #6254c7;
+}
+
+.pdf-document .pdf-missing-image {
+  padding: 12px;
+  border: 1px dashed #a49ead;
+  color: #706c7a;
+}

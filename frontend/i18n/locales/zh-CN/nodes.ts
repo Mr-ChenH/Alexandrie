@@ -3,6 +3,7 @@ export default {
     copyPublicLink: '复制公开链接',
     editMeta: '编辑元数据',
     exportAsMarkdown: '导出为 Markdown',
+    exportAsPdf: '导出为 PDF',
     managePermissions: '管理权限',
     newDocument: '+ 创建新文档',
     publicLink: '公开链接',
@@ -114,6 +115,28 @@ export default {
 
   notifications: {
     linkCopied: '已复制链接到剪贴板',
+  },
+
+  pdf: {
+    description: '将笔记转换为 PDF，方便保存或发送给他人。',
+    download: '下载 PDF',
+    failed: 'PDF 生成失败，请重试。',
+    generate: '生成 PDF',
+    generating: '正在生成 PDF…',
+    imageUnavailable: '图片无法加载',
+    includeDescription: '包含笔记描述',
+    landscape: '横向',
+    missingImages: '有 {count} 张图片未能导出，请预览确认后再分享。',
+    orientation: '页面方向',
+    paperSize: '纸张大小',
+    portrait: '纵向',
+    privateNote: '导出文件不会改变这篇笔记的访问权限。',
+    progress: '正在生成第 {page} / {total} 页…',
+    ready: 'PDF 已生成 · 共 {count} 页',
+    share: '分享 PDF',
+    shareFailed: 'PDF 分享失败，你仍可以下载文件后发送。',
+    shareFallback: '下载 PDF 后，可通过其他应用发送给他人。',
+    title: '分享与导出',
   },
 
   // From the shared_target api (PWA)

@@ -5,12 +5,15 @@
     <div class="sidebar" :class="{ compact: compactMode }">
       <section class="header">
         <span class="name">
-          <IconApp />
+          <IconApp fill="var(--primary)" />
           <NuxtLink class="home-link" to="/dashboard">Alexandrie</NuxtLink>
         </span>
         <IconClose class="btn" />
       </section>
-      <input v-model="filter" type="text" :placeholder="t('components.sidebar.searchPlaceholder')" />
+      <div class="sidebar-search">
+        <Icon name="search" display="sm" />
+        <input v-model="filter" type="search" :aria-label="t('components.sidebar.searchPlaceholder')" :placeholder="t('components.sidebar.searchPlaceholder')" />
+      </div>
 
       <div v-if="userStore.user" class="user">
         <UserAvatar :user="userStore.user" />
@@ -130,10 +133,11 @@ onBeforeUnmount(() => {
 <style scoped lang="scss">
 .sidebar {
   width: 100%;
+  min-width: 0;
   max-height: 100%;
-  padding: 0.5rem 0.2rem 0.5rem 0.5rem;
+  padding: 0.75rem 0.5rem 1rem 0.75rem;
   font-family: $font-ui;
-  background: var(--surface-base);
+  background: var(--surface-sidebar);
   backdrop-filter: var(--backdrop-blur) var(--backdrop-saturate);
   overflow-y: auto;
   scrollbar-gutter: stable;
@@ -144,16 +148,26 @@ onBeforeUnmount(() => {
 }
 
 .home-link {
-  font-family: Arial;
-  font-size: 19px;
-  font-weight: 600;
+  font-family: $font-ui;
+  font-size: 17px;
+  font-weight: 650;
+  color: var(--text-primary);
+  letter-spacing: -0.6px;
 }
 
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 50px;
+  height: 44px;
+  margin-bottom: 12px;
+
+  .name > svg {
+    width: 34px;
+    height: 34px;
+    margin-right: 5px;
+    color: var(--primary);
+  }
 
   .btn {
     width: 30px;
@@ -177,11 +191,14 @@ onBeforeUnmount(() => {
 .icons {
   position: relative;
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
   height: fit-content;
 
   a {
-    padding: 2px;
-    border-radius: 25%;
+    padding: 4px;
+    border-radius: var(--radius-sm);
 
     &:hover {
       background: var(--selection-color);
@@ -189,15 +206,31 @@ onBeforeUnmount(() => {
   }
 }
 
+.sidebar-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  background: var(--surface-base);
+  transition: border-color $transition-fast, box-shadow $transition-fast;
+
+  &:focus-within {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-bg);
+  }
+}
+
 input {
-  height: 30px;
-  margin: 3px 0;
-  padding-left: 30px;
+  min-width: 0;
+  height: 36px;
+  padding: 6px 8px 6px 0;
   border: none;
-  background-color: var(--surface-raised);
-  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" fill="%235b5967" height="24" viewBox="0 -960 960 960" width="22"><path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z"/></svg>');
-  background-repeat: no-repeat;
-  background-position: 5px;
+  font-family: inherit;
+  font-size: 13px;
+  background-color: transparent;
   outline: none;
   transition: background-color $transition-base;
 }
@@ -205,14 +238,28 @@ input {
 .user {
   display: flex;
   align-items: center;
-  margin: 4px 0 0 5px;
+  gap: 8px;
+  margin: 14px 0 10px;
+  padding: 10px 2px;
+  border-bottom: 1px solid var(--border);
 
   .details {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    gap: 6px;
     width: 100%;
-    margin-left: 5px;
-    font-size: 0.85rem;
+    min-width: 0;
+    font-size: 0.8rem;
+
+    a {
+      overflow: hidden;
+    }
+
+    a > div {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
   }
 
   .email {

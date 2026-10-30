@@ -1,1 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M760-160v-50q0-17 11.5-28.5T800-250h80v-30H760v-40h130q17 0 28.5 11.5T930-280v40q0 17-11.5 28.5T890-200h-80v30h120v40H760ZM235-280l185-291-172-269h106l124 200h4l123-200h107L540-573l186 293H620L482-508h-4L340-280H235Z"/></svg>
+<!-- @license lucide-static v0.468.0 - ISC -->
+<svg
+  class="lucide lucide-subscript"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.75"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="m4 5 8 8" />
+  <path d="m12 5-8 8" />
+  <path d="M20 19h-4c0-1.5.44-2 1.5-2.5S20 15.33 20 14c0-.47-.17-.93-.48-1.29a2.11 2.11 0 0 0-2.62-.44c-.42.24-.74.62-.9 1.07" />
+</svg>

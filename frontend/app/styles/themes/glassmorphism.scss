@@ -23,13 +23,16 @@
 }
 
 @mixin glassmorphism-theme-white {
-	--accent-bg: rgb(221 225 248 / 65%);
-	--accent-border: rgb(221 225 248 / 65%);
+	--accent-bg: rgb(239 236 250 / 75%);
+	--accent-border: rgb(220 213 243 / 75%);
 
 	// Surfaces become translucent
-	--surface-base: rgb(255 255 255 / 60%);
-	--surface-raised: rgb(241 246 253 / 70%);
-	--surface-overlay: rgb(226 235 253 / 60%);
+	--body-fixed: #f4f3ef;
+	--surface-base: rgb(255 254 250 / 72%);
+	--surface-raised: rgb(244 243 239 / 75%);
+	--surface-overlay: rgb(238 237 232 / 70%);
+	--surface-sidebar: rgb(244 243 239 / 80%);
+	--surface-card: rgb(255 255 255 / 80%);
 
 
 	// Softer borders
@@ -45,11 +48,14 @@
 }
 
 @mixin glassmorphism-dark-theme {
-	--accent-bg: rgb(44 51 74 / 65%);
-	--accent-border: rgb(74 79 92 / 65%);
-	--surface-base: rgb(33 40 48 / 65%);
-	--surface-raised: rgb(38 44 54 / 55%);
-	--surface-overlay: rgb(45 52 67 / 50%);
+	--accent-bg: rgb(48 43 67 / 75%);
+	--accent-border: rgb(77 66 104 / 75%);
+	--body-fixed: #18171d;
+	--surface-base: rgb(28 27 34 / 78%);
+	--surface-raised: rgb(37 36 45 / 75%);
+	--surface-overlay: rgb(48 46 57 / 70%);
+	--surface-sidebar: rgb(24 23 29 / 80%);
+	--surface-card: rgb(37 36 45 / 85%);
 	--border: rgb(255 255 255 / 12%);
 	--border-subtle: rgb(255 255 255 / 6%);
 	--border-strong: rgb(255 255 255 / 18%);

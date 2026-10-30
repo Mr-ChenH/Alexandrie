@@ -24,8 +24,8 @@ export const DEFAULT_PREFERENCES = {
   theme: 'alexandrie' as string,
   documentAutoSave: true as boolean, // Enable automatic saving of documents
   documentFontSize: 16 as number,
-  documentFontFamily: 'Poppins' as string,
-  documentLineHeight: 1.5 as number,
+  documentFontFamily: 'Inter' as string,
+  documentLineHeight: 1.75 as number,
   documentTitlesNumbering: false as boolean,
   documentColoredTags: true as boolean,
   documentShowAttachments: false as boolean,

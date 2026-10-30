@@ -1,0 +1,41 @@
+{
+  "fixture": "Temporary browser responses; no live backend",
+  "results": [
+    {
+      "test": "home search",
+      "count": 1
+    },
+    {
+      "test": "dark desktop",
+      "overflow": false,
+      "mainOverflow": [],
+      "missingIcons": []
+    },
+    {
+      "test": "dark editor",
+      "background": "rgb(28, 27, 34)",
+      "text": "rgb(216, 213, 223)",
+      "gutter": "rgb(28, 27, 34)",
+      "selection": "#44395f"
+    },
+    {
+      "test": "mobile 390",
+      "overflow": false,
+      "mainOverflow": [],
+      "missingIcons": []
+    },
+    {
+      "test": "mobile 320",
+      "overflow": false,
+      "mainOverflow": [],
+      "missingIcons": []
+    },
+    {
+      "test": "mobile 768",
+      "overflow": false,
+      "mainOverflow": [],
+      "missingIcons": []
+    }
+  ],
+  "errors": []
+}

@@ -11,7 +11,7 @@
     @contextmenu.prevent="openContextMenu"
   >
     <!-- Left icon -->
-    <Icon :fill="item.data.role == 3 ? 'var(--pink) !important' : undefined" :name="icon" :class="customClass" />&nbsp;
+    <Icon :name="icon" :class="customClass" />
 
     <!-- Label -->
     <NuxtLink v-if="item.onClick" class="close content" @click="item.onClick">{{ item.data.role == -1 ? t(item.label) : item.label }}</NuxtLink>
@@ -140,27 +140,36 @@ const drop = async (event: DragEvent) => {
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  gap: 8px;
   width: 100%;
-  margin: 2.5px 0;
-  padding: 1px 4px;
+  min-height: 34px;
+  margin: 2px 0;
+  padding: 5px 8px;
   border-radius: var(--radius-sm);
-  font-size: 15px;
-  letter-spacing: -0.4px;
+  font-size: 13px;
+  letter-spacing: -0.1px;
   cursor: pointer;
+  transition: background-color $transition-fast, color $transition-fast;
 
   &:hover {
     background: var(--surface-overlay);
   }
 
   &:has(.router-link-exact-active:not(.nav)) {
-    background: var(--accent-bg);
+    color: var(--primary);
+    background: var(--primary-bg);
+
+    .content,
+    .default-icon {
+      color: var(--primary);
+    }
   }
 
   .default-icon,
   .item-icon {
     width: 20px;
     height: 20px;
-    color: var(--primary) !important;
+    color: var(--text-secondary);
   }
 
   .item-icon {
@@ -172,10 +181,12 @@ const drop = async (event: DragEvent) => {
 .content {
   position: relative;
   flex: 1;
-  font-weight: 470;
+  min-width: 0;
+  font-weight: 500;
   color: var(--text-primary-light);
   text-overflow: ellipsis;
   white-space: nowrap;
+  overflow: hidden;
 }
 
 .dragging {

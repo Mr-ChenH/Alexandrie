@@ -3,6 +3,7 @@ export default {
     copyPublicLink: 'Copy public link',
     editMeta: 'Edit metadata',
     exportAsMarkdown: 'Export as Markdown',
+    exportAsPdf: 'Export as PDF',
     managePermissions: 'Manage permissions',
     newDocument: '+ Create new document',
     publicLink: 'Public link',
@@ -115,6 +116,28 @@ export default {
 
   notifications: {
     linkCopied: 'Link copied to clipboard',
+  },
+
+  pdf: {
+    description: 'Create a PDF to save or share your note.',
+    download: 'Download PDF',
+    failed: 'Could not create the PDF. Please try again.',
+    generate: 'Generate PDF',
+    generating: 'Generating PDF…',
+    imageUnavailable: 'Image unavailable',
+    includeDescription: 'Include description',
+    landscape: 'Landscape',
+    missingImages: '{count} image(s) could not be included. Check the preview before sharing.',
+    orientation: 'Orientation',
+    paperSize: 'Paper size',
+    portrait: 'Portrait',
+    privateNote: 'Exporting a file does not change this note’s access permissions.',
+    progress: 'Rendering page {page} of {total}…',
+    ready: 'PDF ready · {count} page(s)',
+    share: 'Share PDF',
+    shareFailed: 'Could not share the PDF. You can download it instead.',
+    shareFallback: 'Download the PDF to share it using another app.',
+    title: 'Share & export',
   },
 
   // From the shared_target api (PWA)

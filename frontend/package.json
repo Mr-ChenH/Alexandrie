@@ -16,6 +16,8 @@
     "etag": "^1.8.1",
     "fast-glob": "^3.3.3",
     "fs-extra": "^11.4.1",
+    "html2canvas-pro": "2.5.4",
+    "jspdf": "4.2.1",
     "katex": "^0.18.11",
     "localforage": "^1.10.0",
     "markdown-it": "^15.0.3",

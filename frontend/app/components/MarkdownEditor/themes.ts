@@ -31,7 +31,7 @@ function loadTheme() {
     border: '1px solid var(--primary)',
     borderRadius: '6px',
     padding: '6px 8px',
-    fontFamily: 'Poppins, sans-serif',
+    fontFamily: 'Inter, system-ui, sans-serif',
     fontSize: '14px',
   };
   const generalLine = {
@@ -61,13 +61,13 @@ function loadTheme() {
     base02 = 'var(--text-body)',
     base03 = 'var(--text-secondary)',
     base04 = 'var(--border)',
-    base05 = '#424242',
-    base06 = '#eeeeee',
+    base05 = 'var(--text-body)',
+    base06 = 'var(--surface-raised)',
     base07 = 'var(--surface-base)',
     // Accent colors - using standard Material Design palette
     base08 = 'var(--red)',
-    base09 = '#ff3e00',
-    base0A = '#FF00E9FF',
+    base09 = 'var(--orange)',
+    base0A = 'var(--purple)',
     yellowWhite = '#ffc107',
     orange = 'var(--orange)',
     teal = 'var(--teal)',
@@ -77,22 +77,22 @@ function loadTheme() {
     green = 'var(--green)';
   // UI specific colors
   const invalid = base08,
-    highlightBackground = '#00000008', // Line highlight
+    highlightBackground = 'var(--surface-transparent-light)', // Line highlight
     background = base00,
     tooltipBackground = base01,
-    selection = '#DDEEFF', // Selection background
-    selectionMatch = '#90a4ae26', // Selection match background
-    cursor = base04, // Cursor color
-    activeBracketBg = '#DDEEFF80', // Active bracket background
+    selection = 'var(--selection-color)', // Selection background
+    selectionMatch = 'var(--surface-transparent)', // Selection match background
+    cursor = 'var(--primary)', // Cursor color
+    activeBracketBg = 'var(--primary-bg)', // Active bracket background
     activeBracketBorder = teal, // Active bracket border
     diagnosticWarning = orange, // Warning color
     linkColor = blue, // Link color
-    hoverHighlight = '#ECEFF180'; // Hover highlight
+    hoverHighlight = 'var(--surface-overlay)'; // Hover highlight
   // Diff/merge specific colors
-  const addedBackground = '#e6ffed80', // Light green with transparency for insertions
-    removedBackground = '#ffebe980', // Light red with transparency for deletions
-    addedText = '#28a745', // Bright green for added text
-    removedText = '#d73a49'; // Bright red for removed text
+  const addedBackground = 'var(--green-bg)', // Light green with transparency for insertions
+    removedBackground = 'var(--red-bg)', // Light red with transparency for deletions
+    addedText = 'var(--green)', // Bright green for added text
+    removedText = 'var(--red)'; // Bright red for removed text
   /**
    * Enhanced editor theme styles for Material Light
    */
@@ -129,7 +129,7 @@ function loadTheme() {
         borderLeftWidth: generalCursor.borderLeftWidth,
       },
       '.cm-fat-cursor': {
-        backgroundColor: `${base02}99`,
+        backgroundColor: 'color-mix(in srgb, var(--text-body) 60%, transparent)',
         color: background,
       },
       // Selection
@@ -229,7 +229,7 @@ function loadTheme() {
         paddingRight: generalGutter.paddingRight,
       },
       '.cm-activeLineGutter': {
-        backgroundColor: '#E0E0E0',
+        backgroundColor: 'var(--surface-raised)',
         color: base02,
         fontWeight: generalGutter.fontWeight,
       },
@@ -494,21 +494,21 @@ function loadTheme() {
         borderRadius: generalMatching.borderRadius,
       },
       '.cm-nonmatchingBracket': {
-        backgroundColor: `${invalid}20`,
+        backgroundColor: 'var(--red-bg)',
         outline: `1px solid ${invalid}`,
         borderRadius: generalMatching.borderRadius,
       },
       // Selection matches
       '.cm-selectionMatch': {
         backgroundColor: selectionMatch,
-        outline: `1px solid ${base03}30`,
+        outline: '1px solid var(--border)',
         borderRadius: generalMatching.borderRadius,
       },
       // Fold placeholder
       '.cm-foldPlaceholder': {
         backgroundColor: base01,
         color: base03,
-        border: `1px dotted ${base03}70`,
+        border: '1px dotted var(--border-strong)',
         borderRadius: generalPlaceholder.borderRadius,
         padding: generalPlaceholder.padding,
         margin: generalPlaceholder.margin,
@@ -516,7 +516,7 @@ function loadTheme() {
       // Focus outline
       '&.cm-focused': {
         outline: 'none',
-        boxShadow: `0 0 0 2px ${background}, 0 0 0 3px ${teal}40`,
+        boxShadow: 'inset 0 0 0 1px var(--primary-border)',
       },
       // Scrollbars
       '& .cm-scroller::-webkit-scrollbar': {

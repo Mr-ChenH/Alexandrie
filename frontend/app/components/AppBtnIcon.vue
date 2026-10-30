@@ -4,6 +4,7 @@
     :to="to"
     :href="href"
     :target="blank ? '_blank' : undefined"
+    :aria-label="tooltip || icon"
     v-bind="download ? { download: '' } : {}"
     :class="[{ 'btn-nav': nav }, display]"
     @click="emit('click')"
@@ -13,7 +14,7 @@
     <span v-if="tooltip" class="hint-tooltip btn-tooltip">{{ tooltip }}</span>
   </NuxtLink>
 
-  <button v-else v-bind="attrs" :class="[{ fill, 'btn-nav': nav }, display]" @click="emit('click')">
+  <button v-else v-bind="attrs" :aria-label="attrs['aria-label'] as string || tooltip || icon" :class="[{ fill, 'btn-nav': nav }, display]" @click="emit('click')">
     <Icon :name="icon" :display="display" fill="var(--btn-fill)" />
     <slot />
     <span v-if="tooltip" class="hint-tooltip btn-tooltip">{{ tooltip }}</span>

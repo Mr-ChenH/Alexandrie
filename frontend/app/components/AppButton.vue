@@ -13,14 +13,22 @@ const onClick = () => emit('click');
 <style scoped lang="scss">
 button {
   display: inline-flex;
+  justify-content: center;
   align-items: center;
   gap: 0.5rem;
   width: fit-content;
-  padding: 9px;
+  min-height: 36px;
+  padding: 8px 14px;
+  border: 1px solid transparent;
   border-radius: var(--radius-sm);
   font-size: 0.9rem;
-  font-weight: 450;
+  font-weight: 550;
+  line-height: 1.4;
   white-space: nowrap;
+  transition:
+    background-color $transition-fast,
+    border-color $transition-fast,
+    box-shadow $transition-fast;
 
   &:disabled {
     opacity: 0.8;
@@ -39,25 +47,26 @@ button {
 }
 
 .primary {
-  color: white;
+  color: var(--on-primary);
   background: var(--primary);
 
   &:hover {
     background: var(--primary-dark);
   }
 
-  * {
-    fill: white !important;
+  :deep(.icon) {
+    color: var(--on-primary) !important;
   }
 }
 
 .secondary {
-  padding: 8px;
-  border: 1px solid var(--primary);
-  color: var(--text-body);
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+  background: var(--surface-card);
 
   &:hover {
-    background: var(--selection-color);
+    border-color: var(--primary);
+    background: var(--surface-raised);
   }
 }
 

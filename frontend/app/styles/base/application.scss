@@ -1,0 +1,16 @@
+// Consistent keyboard feedback without adding rings to pointer interactions.
+:where(a, button, input, textarea, select, [tabindex]):focus-visible {
+	outline: 2px solid var(--primary);
+	outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		transition-duration: 0.01ms !important;
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		scroll-behavior: auto !important;
+	}
+}

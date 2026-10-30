@@ -3,7 +3,7 @@
     <div class="top">
       <div class="header">
         <span style="display: flex; align-items: center; gap: 10px; overflow: hidden">
-          <Icon :name="category?.icon || 'files'" display="xl" :class="['category-icon', getAppAccent(node.color || category?.color, true)]" />
+          <Icon :name="category?.icon || 'files'" :size="36" :class="['category-icon', getAppAccent(node.color || category?.color, true)]" />
           <NuxtLink :to="`/dashboard/docs/${node.id}`" class="document-title">{{ node.name }}</NuxtLink>
         </span>
         <NodeActionDotMenu :node="node" :user="user" />
@@ -66,7 +66,7 @@ function openContextMenu(event: MouseEvent) {
   min-height: 250px;
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  background: var(--surface-base);
+  background: var(--surface-card);
   box-shadow: var(--shadow-xs);
   transition:
     border-color $transition-base ease,
@@ -86,6 +86,8 @@ function openContextMenu(event: MouseEvent) {
 }
 
 .category-icon {
+  width: 36px;
+  height: 36px;
   padding: 8px;
   border-radius: var(--radius-md);
 }

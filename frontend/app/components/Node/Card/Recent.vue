@@ -2,7 +2,7 @@
   <div class="card">
     <div class="header">
       <div class="icon-wrapper">
-        <Icon :name="icon" display="xl" :class="['node-icon', getAppAccent(node.color || (category?.color as number), true)]" />
+        <Icon :name="icon" :size="36" :class="['node-icon', getAppAccent(node.color || (category?.color as number), true)]" />
       </div>
       <span class="time">{{ relativeTime(node.updated_timestamp) }}</span>
     </div>
@@ -57,12 +57,14 @@ const computedTags = computed(() => {
   display: flex;
   flex-direction: column;
   height: 100%;
+  min-height: 174px;
   padding: 1.25rem;
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   color: var(--text-body);
   text-decoration: none;
-  background: var(--surface-base);
+  background: var(--surface-card);
+  box-shadow: var(--shadow-xs);
   transition:
     border-color $transition-fast ease,
     background-color $transition-fast ease,
@@ -70,10 +72,10 @@ const computedTags = computed(() => {
     transform $transition-fast ease;
 
   &:hover {
-    border-color: var(--primary);
-    background: var(--surface-raised);
+    border-color: var(--primary-border);
+    background: var(--surface-card);
     box-shadow: var(--shadow-md);
-    transform: translateY(-2px);
+    transform: translateY(-1px);
   }
 }
 
@@ -91,7 +93,9 @@ const computedTags = computed(() => {
 }
 
 .node-icon {
-  padding: 0.4rem;
+  width: 36px;
+  height: 36px;
+  padding: 8px;
   border-radius: var(--radius-sm);
 }
 

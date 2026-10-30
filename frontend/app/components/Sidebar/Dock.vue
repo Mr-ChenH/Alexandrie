@@ -1,6 +1,6 @@
 <template>
   <div class="dock">
-    <NuxtLink v-for="item in items" :key="item.label" :to="item.to" :class="{ admin: item.adminOnly, show: isAdmin && item.adminOnly }">
+    <NuxtLink v-for="item in items" :key="item.label" :to="item.to" :aria-label="item.label" :title="item.label" :class="{ admin: item.adminOnly, show: isAdmin && item.adminOnly }">
       <Icon :name="item.icon" display="lg" /><span v-if="mark.hasMark(item.mark as MarkId)" class="bubble" />
     </NuxtLink>
 
@@ -48,22 +48,27 @@ function closeDock() {
 .dock {
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  padding: 1rem 0.3rem;
-  border-right: 1px solid var(--border);
-  background-color: var(--surface-raised-light);
+  gap: 10px;
+  padding: 1rem 0.4rem;
+  border-right: 1px solid var(--border-subtle);
+  background-color: var(--surface-sidebar);
 }
 
 a {
   position: relative;
-  width: 39px;
-  height: 39px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 36px;
+  height: 36px;
   padding: 0.5rem;
   border-radius: var(--radius-md);
+  color: var(--text-secondary);
   transition: background-color $transition-medium ease;
 
   &:hover {
-    background-color: var(--primary-bg);
+    color: var(--text-primary);
+    background-color: var(--surface-overlay);
   }
 }
 

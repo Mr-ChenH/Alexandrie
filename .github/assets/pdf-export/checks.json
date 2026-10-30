@@ -1,0 +1,44 @@
+[
+  {
+    "test": "share passes a real PDF File",
+    "name": "给灵感一个安静的角落.pdf",
+    "type": "application/pdf",
+    "size": 5507511,
+    "title": "给灵感一个安静的角落"
+  },
+  {
+    "test": "share cancellation is silent",
+    "passed": true
+  },
+  {
+    "test": "failed sharing retains download",
+    "passed": true
+  },
+  {
+    "test": "option change clears stale PDF and revokes URL",
+    "passed": true
+  },
+  {
+    "test": "mobile dialog",
+    "overflow": false
+  },
+  {
+    "test": "Escape closes modal",
+    "passed": true
+  },
+  {
+    "test": "actual PDF with image, Chinese, formula, table, code and Mermaid",
+    "pages": 2,
+    "bytes": 423310
+  },
+  {
+    "test": "missing image warning and landscape Letter",
+    "pages": 1,
+    "missingImages": 1
+  },
+  {
+    "test": "empty note and frame cleanup",
+    "pages": 1,
+    "frames": 0
+  }
+]

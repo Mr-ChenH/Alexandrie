@@ -3,6 +3,7 @@ export default {
     copyPublicLink: '複製公開連結',
     editMeta: '編輯中繼資料',
     exportAsMarkdown: '匯出為 Markdown',
+    exportAsPdf: '匯出為 PDF',
     managePermissions: '管理權限',
     newDocument: '+ 建立新文件',
     publicLink: '公開連結',
@@ -114,6 +115,28 @@ export default {
 
   notifications: {
     linkCopied: '已複製連結到剪貼簿',
+  },
+
+  pdf: {
+    description: '將筆記轉換為 PDF，方便儲存或傳送給他人。',
+    download: '下載 PDF',
+    failed: 'PDF 產生失敗，請重試。',
+    generate: '產生 PDF',
+    generating: '正在產生 PDF…',
+    imageUnavailable: '圖片無法載入',
+    includeDescription: '包含筆記描述',
+    landscape: '橫向',
+    missingImages: '有 {count} 張圖片無法匯出，請先預覽確認再分享。',
+    orientation: '頁面方向',
+    paperSize: '紙張大小',
+    portrait: '直向',
+    privateNote: '匯出檔案不會改變這篇筆記的存取權限。',
+    progress: '正在產生第 {page} / {total} 頁…',
+    ready: 'PDF 已產生 · 共 {count} 頁',
+    share: '分享 PDF',
+    shareFailed: 'PDF 分享失敗，你仍可以下載檔案後傳送。',
+    shareFallback: '下載 PDF 後，可透過其他應用程式傳送給他人。',
+    title: '分享與匯出',
   },
 
   // From the shared_target api (PWA)

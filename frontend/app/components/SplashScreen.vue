@@ -144,7 +144,7 @@
   width: 45%;
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, transparent, #3956e7, transparent);
+  background: linear-gradient(90deg, transparent, #6254c7, transparent);
   animation: loadingLine 1.4s ease-in-out infinite;
 }
 

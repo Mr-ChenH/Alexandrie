@@ -3,6 +3,7 @@ export default {
     copyPublicLink: 'Öffentlichen Link kopieren',
     editMeta: 'Metadaten bearbeiten',
     exportAsMarkdown: 'Als Markdown exportieren',
+    exportAsPdf: 'Als PDF exportieren',
     managePermissions: 'Berechtigungen verwalten',
     newDocument: '+ Neues Dokument erstellen',
     publicLink: 'Öffentlicher Link',
@@ -115,6 +116,28 @@ export default {
 
   notifications: {
     linkCopied: 'Link in die Zwischenablage kopiert',
+  },
+
+  pdf: {
+    description: 'Erstelle ein PDF deiner Notiz zum Speichern oder Teilen.',
+    download: 'PDF herunterladen',
+    failed: 'Das PDF konnte nicht erstellt werden. Bitte erneut versuchen.',
+    generate: 'PDF erstellen',
+    generating: 'PDF wird erstellt…',
+    imageUnavailable: 'Bild nicht verfügbar',
+    includeDescription: 'Beschreibung einschließen',
+    landscape: 'Querformat',
+    missingImages: '{count} Bild(er) fehlen. Prüfe die Vorschau vor dem Teilen.',
+    orientation: 'Ausrichtung',
+    paperSize: 'Papierformat',
+    portrait: 'Hochformat',
+    privateNote: 'Der Export ändert die Zugriffsrechte dieser Notiz nicht.',
+    progress: 'Seite {page} von {total} wird erstellt…',
+    ready: 'PDF bereit · {count} Seite(n)',
+    share: 'PDF teilen',
+    shareFailed: 'Das PDF konnte nicht geteilt werden. Du kannst es herunterladen.',
+    shareFallback: 'Lade das PDF herunter, um es mit einer anderen App zu teilen.',
+    title: 'Teilen und exportieren',
   },
 
   // From the shared_target api (PWA)

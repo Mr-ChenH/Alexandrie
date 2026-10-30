@@ -3,6 +3,7 @@ export default {
     copyPublicLink: '공개 링크 복사',
     editMeta: '메타데이터 편집',
     exportAsMarkdown: '마크다운으로 내보내기',
+    exportAsPdf: 'PDF로 내보내기',
     managePermissions: '권한 관리',
     newDocument: '+ 새 문서 생성',
     publicLink: '공개 링크',
@@ -114,6 +115,28 @@ export default {
 
   notifications: {
     linkCopied: '링크가 클립보드에 복사되었습니다',
+  },
+
+  pdf: {
+    description: '노트를 저장하거나 공유할 PDF를 만듭니다.',
+    download: 'PDF 다운로드',
+    failed: 'PDF를 생성하지 못했습니다. 다시 시도하세요.',
+    generate: 'PDF 생성',
+    generating: 'PDF 생성 중…',
+    imageUnavailable: '이미지를 불러올 수 없음',
+    includeDescription: '설명 포함',
+    landscape: '가로',
+    missingImages: '이미지 {count}개를 포함하지 못했습니다. 공유하기 전에 미리 보기를 확인하세요.',
+    orientation: '방향',
+    paperSize: '용지 크기',
+    portrait: '세로',
+    privateNote: '파일을 내보내도 이 노트의 접근 권한은 변경되지 않습니다.',
+    progress: '{total}페이지 중 {page}페이지 생성 중…',
+    ready: 'PDF 준비 완료 · {count}페이지',
+    share: 'PDF 공유',
+    shareFailed: 'PDF를 공유하지 못했습니다. 파일을 다운로드할 수 있습니다.',
+    shareFallback: 'PDF를 다운로드한 후 다른 앱으로 공유할 수 있습니다.',
+    title: '공유 및 내보내기',
   },
 
   // From the shared_target api (PWA)

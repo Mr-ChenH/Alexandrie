@@ -1,0 +1,30 @@
+{
+  "errors": [],
+  "checks": [
+    {
+      "test": "production native file share",
+      "type": "application/pdf",
+      "size": 332189
+    },
+    {
+      "test": "cancelled share has no error",
+      "passed": true
+    },
+    {
+      "test": "sharing failure retains download",
+      "passed": true
+    },
+    {
+      "test": "production mobile dialog",
+      "overflow": false
+    },
+    {
+      "test": "production Letter landscape",
+      "bytes": 314983
+    },
+    {
+      "test": "unsupported native share offers download",
+      "passed": true
+    }
+  ]
+}

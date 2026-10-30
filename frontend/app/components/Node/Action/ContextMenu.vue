@@ -22,6 +22,10 @@
       </button>
     </div>
 
+    <div v-if="node.role === 3" class="menu-group">
+      <button class="menu-item" @click="action('shareExport')"><Icon name="share" />{{ t('nodes.pdf.title') }}</button>
+    </div>
+
     <div v-if="nodesPermissionsStore.hasPermissions(node, 4)" class="menu-group">
       <button class="menu-item" @click="action('manageAccess')"><Icon name="manage_access" />{{ t('nodes.actions.managePermissions') }}</button>
     </div>
@@ -38,6 +42,7 @@
 
 <script setup lang="ts">
 import NodePermissions from '../Modals/Permissions.vue';
+import ShareExport from '../Modals/ShareExport.vue';
 import NodeDeleteModal from '../Modals/Delete.vue';
 import type { Node } from '~/stores';
 
@@ -90,6 +95,9 @@ async function action(name: string) {
       break;
     case 'manageAccess':
       modals.add(new Modal(shallowRef(NodePermissions), { props: { node: props.node }, size: 'small' }));
+      break;
+    case 'shareExport':
+      modals.add(new Modal(shallowRef(ShareExport), { props: { doc: props.node }, size: 'small' }));
       break;
     case 'copyId':
       navigator.clipboard.writeText(props.node.id);

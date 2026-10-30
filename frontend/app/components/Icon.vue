@@ -1,6 +1,6 @@
 <template>
-  <svg v-if="isSpriteIcon" class="icon" :class="display" :style="{ color: fill || 'currentColor', width: size, height: size }" aria-hidden="true">
-    <use :xlink:href="`#icon-${name}`" />
+  <svg v-if="isSpriteIcon" class="icon" :class="display" :style="{ color: fill, width: iconSize, height: iconSize }" aria-hidden="true">
+    <use :href="`#icon-${name}`" />
   </svg>
 
   <!-- eslint-disable-next-line vue/no-v-html | OK Because not a user entry-->
@@ -10,9 +10,11 @@
 <script setup lang="ts">
 const props = withDefaults(defineProps<{ name: string; fill?: string; display?: 'xsm' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl'; size?: number | string }>(), {
   display: 'md',
-  fill: 'var(--text-body)',
+  fill: 'currentColor',
   size: undefined,
 });
+
+const iconSize = computed(() => (typeof props.size === 'number' ? `${props.size}px` : props.size));
 
 const isUnicode = (str: string) => Array.from(str).some(char => char.charCodeAt(0) > 255);
 
@@ -23,14 +25,16 @@ const isSpriteIcon = computed(() => {
 
 <style scoped lang="scss">
 .icon {
-  display: flex;
+  display: inline-flex;
+  flex-shrink: 0;
   justify-content: center;
   align-items: center;
   pointer-events: none;
   user-select: none;
 
+  // The symbol owns its fill and stroke. Do not fill outline icons here.
   use {
-    fill: currentcolor;
+    fill: none;
   }
 
   /* Custom sizes */

@@ -2,7 +2,7 @@ export default {
   actions: {
     import: '导入',
     joinWorkspace: '加入工作区',
-    newDocument: '+ 新增文档',
+    newDocument: '新增文档',
     newWorkspace: '新增工作区',
   },
 

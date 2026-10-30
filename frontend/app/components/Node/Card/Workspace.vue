@@ -1,12 +1,9 @@
 <template>
   <div class="workspace-tile" :class="getAppAccent(workspace.color, true)">
-    <div class="glow-ambiance" />
-
     <div class="tile-content">
       <div class="top-row">
         <div :class="['icon-box', getAppAccent(workspace.color, true)]">
           <Icon :name="workspace.icon || 'workspace'" class="ws-icon" />
-          <span class="status-dot" />
         </div>
 
         <div class="doc-badge">
@@ -65,7 +62,8 @@ const docCount = computed(() => {
   padding: 1.25rem;
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  background: var(--surface-base);
+  background: var(--surface-card);
+  box-shadow: var(--shadow-xs);
   cursor: pointer;
   transition:
     border-color $transition-fast ease,
@@ -75,42 +73,12 @@ const docCount = computed(() => {
   overflow: hidden;
 
   &:hover {
-    border-color: var(--primary);
-    background: var(--surface-raised);
+    border-color: var(--primary-border);
+    background: var(--surface-card);
     box-shadow: var(--shadow-md);
-    transform: translateY(-2px);
+    transform: translateY(-1px);
 
-    .glow-ambiance {
-      opacity: 0.08;
-      transform: scale(1.1);
-    }
-
-    .icon-box {
-      .ws-icon {
-        transform: scale(1.05);
-      }
-
-      .status-dot {
-        box-shadow: 0 0 8px var(--primary);
-      }
-    }
   }
-}
-
-.glow-ambiance {
-  position: absolute;
-  top: -20%;
-  right: -20%;
-  z-index: 0;
-  width: 60%;
-  height: 60%;
-  background: radial-gradient(circle, color-mix(in srgb, var(--primary) 25%, transparent) 0%, transparent 75%);
-  opacity: 0;
-  transition:
-    opacity $transition-base ease,
-    transform $transition-base ease;
-  filter: blur(30px);
-  pointer-events: none;
 }
 
 .tile-content {
@@ -142,21 +110,6 @@ const docCount = computed(() => {
     transition: transform $transition-fast ease;
   }
 
-  .status-dot {
-    position: absolute;
-    top: -1px;
-    right: -1px;
-    width: 8px;
-    height: 8px;
-    border: 2px solid var(--surface-base);
-    border-radius: 50%;
-    background: var(--primary);
-    transition: box-shadow $transition-fast ease;
-
-    .workspace-tile:hover & {
-      border-color: var(--surface-raised);
-    }
-  }
 }
 
 .doc-badge {

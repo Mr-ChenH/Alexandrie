@@ -2,7 +2,7 @@ export default {
   actions: {
     import: 'Імпорт',
     joinWorkspace: 'Приєднатися до робочого простору',
-    newDocument: '+ Новий документ',
+    newDocument: 'Новий документ',
     newWorkspace: 'Новий простір',
   },
 

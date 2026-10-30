@@ -134,7 +134,8 @@ $secondary-height: 40px;
 header {
   width: 100%;
   margin: 0 auto;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--surface-base);
 }
 
 .navbar {
@@ -143,7 +144,7 @@ header {
   align-items: center;
   gap: 12px;
   height: $navbar-height;
-  padding: 0 4px;
+  padding: 0 16px;
 }
 
 .navbar-left-trigger {
@@ -220,8 +221,9 @@ header {
   gap: 10px;
   min-width: 0;
   height: 100%;
-  font-size: 17px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 550;
+  color: var(--text-primary);
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
@@ -270,13 +272,13 @@ header {
   height: 36px;
   margin: 0;
   padding: 0 12px;
-  border: none;
-  border-radius: var(--radius-sm);
-  font-size: 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: 13px;
   font-weight: 500;
   color: var(--text-secondary);
   white-space: nowrap;
-  background: var(--border);
+  background: var(--surface-raised-light);
   cursor: pointer;
   transition:
     background-color $transition-base ease,
@@ -284,8 +286,7 @@ header {
 
   &:hover {
     color: var(--text-primary);
-    background: var(--selection-color);
-    transform: translateY(-1px);
+    background: var(--surface-raised);
   }
 
   &:active {

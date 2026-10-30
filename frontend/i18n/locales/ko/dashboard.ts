@@ -2,7 +2,7 @@ export default {
   actions: {
     import: '가져오기',
     joinWorkspace: '워크스페이스 참여',
-    newDocument: '+ 새 문서',
+    newDocument: '새 문서',
     newWorkspace: '새 워크스페이스',
   },
 

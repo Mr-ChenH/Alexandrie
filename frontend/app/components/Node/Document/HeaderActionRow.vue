@@ -1,6 +1,7 @@
 <template>
   <AppBtnIcon v-if="isPublic" nav icon="link" :tooltip="t('nodes.actions.copyPublicLink')" @click="copyPublicLink" />
-  <AppBtnIcon v-if="isPublic" nav icon="share" :tooltip="t('nodes.actions.share')" @click="share" />
+  <AppBtnIcon v-if="doc.role === 3" nav icon="share" :tooltip="t('nodes.pdf.title')" @click="openShareExport" />
+  <AppBtnIcon v-else-if="isPublic" nav icon="share" :tooltip="t('nodes.actions.share')" @click="share" />
   <AppBtnIcon v-if="doc.accessibility == 3 && !isPublic" nav icon="link" :tooltip="t('nodes.actions.publicLink')" :to="`/doc/${doc.id}`" :blank="true" />
   <AppBtnIcon
     v-if="nodesPermissionsStore.hasPermissions(doc, 2)"
@@ -9,6 +10,7 @@
     :tooltip="t('common.actions.edit')"
     :to="isPublic ? `/doc/${doc.id}/edit` : `/dashboard/docs/edit/${doc.id}`"
   />
+  <AppBtnIcon v-if="doc.role === 3" nav icon="sidebar/pdf" :tooltip="t('nodes.actions.exportAsPdf')" @click="openShareExport" />
   <AppBtnIcon nav icon="markdown" :tooltip="t('nodes.actions.exportAsMarkdown')" @click="exportMarkdown" />
   <AppBtnIcon nav icon="print" :tooltip="t('common.actions.print')" @click="print" />
   <AppBtnIcon v-if="doc.shared" nav icon="group_off" :tooltip="t('nodes.actions.removeFromShared')" @click="openRemoveShareModal" />
@@ -25,6 +27,7 @@
 
 <script setup lang="ts">
 import DeleteNodeModal from '~/components/Node/Modals/Delete.vue';
+import ShareExport from '~/components/Node/Modals/ShareExport.vue';
 import DocumentMeta from '~/components/Node/Modals/Metadata.vue';
 import NodePermissions from '~/components/Node/Modals/Permissions.vue';
 import RemoveSharedNode from '~/components/Node/Modals/RemoveShared.vue';
@@ -60,6 +63,7 @@ const share = async () => {
     // The user dismissed the share sheet, nothing to report.
   }
 };
+const openShareExport = () => modals.add(new Modal(shallowRef(ShareExport), { props: { doc: props.doc, isPublic: props.isPublic }, size: 'small' }));
 const print = () => window.print();
 const openDeleteModal = () =>
   modals.add(

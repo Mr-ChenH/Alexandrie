@@ -22,13 +22,14 @@ useStyleInjection(); // Custom styles for the app and documents
 const { initGlobalListeners, destroyGlobalListeners } = useCommandCenter();
 
 const primaryColor = preferences.get('primaryColor');
+const colorMode = useColorMode();
 const interfaceStyle = preferences.get('style');
 const locale = preferences.get('locale');
 
 /* Watchers to make sure app state reflects preferences */
 watch(
-  primaryColor,
-  color => {
+  [primaryColor, () => colorMode.value],
+  ([color]) => {
     setAppColor(Number(color));
   },
   { immediate: true },

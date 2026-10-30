@@ -2,7 +2,7 @@ export default {
   actions: {
     import: 'Importa',
     joinWorkspace: 'Entra nell\'area di lavoro',
-    newDocument: '+ Nuovo documento',
+    newDocument: 'Nuovo documento',
     newWorkspace: 'Nuova area di lavoro',
   },
 

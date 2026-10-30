@@ -53,7 +53,7 @@ export default defineNuxtConfig({
         { content: 'Alexandrie', name: 'apple-mobile-web-app-title' },
         { content: 'yes', name: 'apple-mobile-web-app-capable' },
         { content: 'yes', name: 'mobile-web-app-capable' },
-        { content: '#3956e7', name: 'theme-color' },
+        { content: '#6254c7', name: 'theme-color' },
 
         // Open Graph
         { content: 'website', property: 'og:type' },
@@ -210,7 +210,7 @@ export default defineNuxtConfig({
       maximumFileSizeToCacheInBytes: 30_000_000,
     },
     manifest: {
-      background_color: '#334155',
+      background_color: '#fffefa',
       description: 'App for taking beautiful notes in extended Markdown format.',
       display: 'standalone',
       icons: [
@@ -301,7 +301,7 @@ export default defineNuxtConfig({
       short_name: 'Alexandrie',
       start_url: '/dashboard',
       scope: '/',
-      theme_color: '#3956e7',
+      theme_color: '#6254c7',
     },
     registerType: 'autoUpdate',
     srcDir: '.',

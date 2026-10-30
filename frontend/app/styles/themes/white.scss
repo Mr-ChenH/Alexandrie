@@ -1,53 +1,58 @@
 @mixin white-theme {
 	// ACCENT / PRIMARY COLOR
-	--accent: #0c60d9;
-	--accent-dark: #2c3eb9;
-	--accent-bg: #dde1f8;
-	--accent-border: #dde1f8;
+	--accent: #6254c7;
+	--accent-dark: #5143b0;
+	--accent-bg: #efecfa;
+	--accent-border: #dcd5f3;
 
 	// -------------------------------------------------------------------------
 	// SURFACES (Backgrounds)
 	// Layered system: base → raised → overlay
 	// -------------------------------------------------------------------------
-	--surface-base: #fff;
-	--surface-raised: #F1F6FD;
-	--surface-raised-light: #f4f6f8;
-	--surface-overlay: #e2ebfd;
-	--surface-transparent: rgb(8 8 8 / 3%);
-	--surface-transparent-light: rgb(8 8 8 / 2%);
-	--input-bg: #fafafa;
+	--surface-base: #fffefa;
+	--surface-raised: #f4f3ef;
+	--surface-raised-light: #f8f7f4;
+	--surface-overlay: #eeede8;
+	--surface-transparent: rgb(37 35 45 / 4%);
+	--surface-transparent-light: rgb(37 35 45 / 2%);
+	--input-bg: #fbfaf7;
 	--body-fixed: var(--surface-base);
+	--surface-sidebar: #f4f3ef;
+	--surface-card: #fff;
+	--on-primary: #fff;
+
+	color-scheme: light;
 	// -------------------------------------------------------------------------
 	// TEXT
 	// -------------------------------------------------------------------------
-	--text-body: #3c4450;
-	--text-primary: #3d3a3f;
-	--text-primary-light: #3c3b3d;
-	--text-secondary: #62748e;
-	--text-muted: #666;
-	--text-inverse: #030303;
+	--text-body: #37353e;
+	--text-primary: #25232d;
+	--text-primary-light: #46434f;
+	--text-secondary: #706c7a;
+	--text-muted: #76717e;
+	--text-inverse: #25232d;
 
 	// -------------------------------------------------------------------------
 	// BORDERS
 	// -------------------------------------------------------------------------
-	--border: #ddd;
-	--border-subtle: #dfe0e585;
-	--border-strong: #c4c6d0;
+	--border: #e4e1da;
+	--border-subtle: #eeece6;
+	--border-strong: #c9c4d0;
 	--border-focus: var(--accent);
 
 	// -------------------------------------------------------------------------
 	// SHADOWS
 	// -------------------------------------------------------------------------
-	--shadow-xs: 0 1px 2px rgb(0 0 0 / 4%);
-	--shadow-sm: 0 2px 4px rgb(0 0 0 / 6%);
-	--shadow-md: 0 4px 12px rgb(0 0 0 / 8%);
-	--shadow-lg: 0 8px 24px rgb(0 0 0 / 12%);
-	--shadow-xl: 0 20px 40px rgb(0 0 0 / 16%);
+	--shadow-xs: 0 1px 2px rgb(32 26 47 / 3%);
+	--shadow-sm: 0 2px 6px rgb(32 26 47 / 4%);
+	--shadow-md: 0 6px 20px rgb(32 26 47 / 6%);
+	--shadow-lg: 0 12px 36px rgb(32 26 47 / 10%);
+	--shadow-xl: 0 24px 64px rgb(32 26 47 / 14%);
 
 	// -------------------------------------------------------------------------
 	// INTERACTIVE STATES
 	// -------------------------------------------------------------------------
-	--selection-color: #cbd4dd;
+	--selection-color: #e5dff7;
 
 	// -------------------------------------------------------------------------
 	// COLORS (semantic: color-["", "dark", "bg", "bg-light", "border"])
@@ -95,11 +100,11 @@
 	--teal-bg-light: rgb(23 162 184 / 5%);
 	--teal-border: rgb(23 162 184 / 25%);
 	// PURPLES
-	--purple: #6024ec;
-	--purple-dark: #5a1fdb;
-	--purple-bg: rgb(111 66 193 / 20%);
-	--purple-bg-light: rgb(111 66 193 / 5%);
-	--purple-border: rgb(111 66 193 / 25%);
+	--purple: #6254c7;
+	--purple-dark: #5143b0;
+	--purple-bg: #efecfa;
+	--purple-bg-light: #f7f5fc;
+	--purple-border: #dcd5f3;
 	// PINKS
 	--pink: #FF204E;
 	--pink-dark: #e00b58;

@@ -10,7 +10,7 @@
           </p>
         </div>
         <div class="quick-actions">
-          <AppButton type="primary" @click="createNewDocument">{{ t('dashboard.actions.newDocument') }}</AppButton>
+          <AppButton type="primary" @click="createNewDocument"><Icon name="plus" display="sm" />{{ t('dashboard.actions.newDocument') }}</AppButton>
           <AppButton type="secondary" @click="openJoinModal"><Icon name="join" display="sm" /> {{ t('dashboard.actions.joinWorkspace') }}</AppButton>
         </div>
       </header>
@@ -23,13 +23,14 @@
             v-model="searchQuery"
             type="text"
             :placeholder="t('dashboard.search')"
+            :aria-label="t('dashboard.search')"
             class="search-input"
             @focus="isSearchFocused = true"
             @blur="isSearchFocused = false"
           />
-          <div v-if="searchQuery" class="search-clear" @click="searchQuery = ''">
-            <Icon name="close" />
-          </div>
+          <button v-if="searchQuery" class="search-clear" :aria-label="t('common.actions.clear')" @click="searchQuery = ''">
+            <Icon name="close" display="sm" />
+          </button>
         </div>
         <Transition name="dropdown">
           <div v-if="searchResults?.length" class="search-results">
@@ -83,7 +84,7 @@
           <NuxtLink v-for="workspace in workspaces" :key="workspace.id" :to="`/dashboard/categories/${workspace.id}`">
             <NodeCardWorkspace :workspace="workspace" />
           </NuxtLink>
-          <button class="add-workspace" @click="openCreateWorkspace">{{ t('dashboard.actions.newWorkspace') }}</button>
+          <button class="add-workspace" @click="openCreateWorkspace"><Icon name="plus" />{{ t('dashboard.actions.newWorkspace') }}</button>
         </div>
       </section>
 
@@ -219,14 +220,14 @@ const openJoinModal = () => modals.add(new Modal(shallowRef(NodeJoin), { size: '
 <style scoped lang="scss">
 .home-top {
   margin-top: 0.5rem;
-  padding: 3rem 1.5rem;
+  padding: 2.5rem 0 1.5rem;
 }
 
 .home-container {
   width: 100%;
-  max-width: 1400px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 1rem;
+  padding: 1rem clamp(1rem, 4vw, 3rem);
 }
 
 // Header
@@ -241,8 +242,10 @@ const openJoinModal = () => modals.add(new Modal(shallowRef(NodeJoin), { size: '
 
 .greeting h1 {
   margin-bottom: 0.25rem;
-  font-size: 2rem;
-  font-weight: 700;
+  font-size: clamp(1.6rem, 2.5vw, 2rem);
+  font-weight: 650;
+  color: var(--text-primary);
+  letter-spacing: -0.06rem;
 }
 
 .subtitle {
@@ -252,27 +255,30 @@ const openJoinModal = () => modals.add(new Modal(shallowRef(NodeJoin), { size: '
 }
 
 .sections {
-  padding: 2rem;
+  padding: 0.5rem 0 2rem;
 }
 
 .quick-actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.75rem;
 }
 
 // Search
 .search-section {
   position: relative;
-  margin-bottom: 2rem;
+  margin-bottom: 0.5rem;
 }
 
 .search-wrapper {
   display: flex;
   align-items: center;
+  gap: 0.75rem;
   padding: 0.75rem 1rem;
-  border: 2px solid var(--border);
+  border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  background: var(--surface-base);
+  background: var(--surface-card);
+  box-shadow: var(--shadow-xs);
   transition:
     border-color $transition-fast,
     box-shadow $transition-fast;
@@ -284,14 +290,16 @@ const openJoinModal = () => modals.add(new Modal(shallowRef(NodeJoin), { size: '
 }
 
 .search-icon {
-  margin-right: 0.75rem;
   color: var(--text-secondary);
 }
 
 .search-input {
   flex: 1;
+  min-width: 0;
+  padding: 0.35rem 0;
   border: none;
-  font-size: 1rem;
+  font-family: inherit;
+  font-size: 0.9rem;
   color: var(--text-body);
   background: transparent;
   outline: none;
@@ -397,29 +405,40 @@ const openJoinModal = () => modals.add(new Modal(shallowRef(NodeJoin), { size: '
     display: flex;
     flex: 1;
     align-items: center;
-    gap: 0.5rem;
-    font-size: 1.1rem;
+    gap: 0.65rem;
+    margin: 0;
+    padding: 0;
+    border: none;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-primary);
+
+    :deep(.icon) {
+      width: 18px;
+      height: 18px;
+      color: var(--text-secondary);
+    }
   }
 }
 
 // Continue working cards
 .continue-working {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr));
   gap: 1rem;
 }
 
 // Pinned
 .pinned-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr));
   gap: 1rem;
 }
 
 // Workspaces
 .workspaces-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr));
   gap: 1rem;
 }
 
@@ -428,8 +447,9 @@ const openJoinModal = () => modals.add(new Modal(shallowRef(NodeJoin), { size: '
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  min-height: 150px;
-  border: 2px dashed var(--border);
+  gap: 0.75rem;
+  min-height: 170px;
+  border: 1px dashed var(--border);
   border-radius: var(--radius-lg);
   font-size: 0.9rem;
   color: var(--text-secondary);
