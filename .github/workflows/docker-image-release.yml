@@ -1,4 +1,5 @@
 name: Build and Publish Docker Images
+run-name: Docker images · ${{ github.ref_name }} · ${{ github.event_name }}
 
 on:
   push:
