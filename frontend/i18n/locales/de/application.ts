@@ -1,4 +1,9 @@
 export default {
+  connection: {
+    localDataKept: "Lokale Notizen und Entwürfe bleiben erhalten. Anmeldung und Synchronisierung sind nach der Wiederherstellung des Dienstes möglich.",
+    retry: "Erneut verbinden",
+    unavailable: "Keine Verbindung zum Server",
+  },
   shortcuts: {
     boldText: 'Fettgedruckter Text',
     bulletList: 'Aufzählungsliste',

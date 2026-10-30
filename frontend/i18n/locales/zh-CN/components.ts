@@ -38,11 +38,27 @@ export default {
   },
 
   editor: {
+    autosaveOff: '自动保存已关闭',
+    autosaveOn: '自动保存已开启',
+    draftUnavailable: '本地草稿保存失败，离开页面前请先保存。',
+    error: '保存失败 · 草稿保留在本机',
+    layout: '编辑器视图',
+    local: '已保存到本机 · 等待同步',
     placeholder: {
       description: '文档描述',
       title: '文档标题',
     },
+    recovery: '发现与已保存笔记不同的本地草稿，请选择要继续编辑的版本。',
+    restoreDraft: '恢复草稿',
+    retry: '重试',
+    saved: '已保存',
+    savePending: '等待保存…',
+    saving: '正在保存…',
+    split: '分屏',
     title: 'Markdown 编辑器',
+    unsaved: '有未保存的修改',
+    untitled: '未命名笔记',
+    useSaved: '使用已保存版本',
   },
 
   filter: {

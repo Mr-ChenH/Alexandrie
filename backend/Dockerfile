@@ -1,30 +1,23 @@
-# Backend Dockerfile for Alexandrie
-FROM golang:1.26-alpine AS builder
+# syntax=docker/dockerfile:1
 
+FROM --platform=$BUILDPLATFORM golang:1.26-alpine AS builder
 WORKDIR /app
 
-# Copy go mod files
 COPY go.mod go.sum ./
+RUN --mount=type=cache,target=/go/pkg/mod go mod download
 
-# Download dependencies
-RUN go mod download
-
-# Copy source code
 COPY . .
+ARG TARGETOS
+ARG TARGETARCH
+RUN --mount=type=cache,target=/go/pkg/mod \
+    --mount=type=cache,target=/root/.cache/go-build \
+    CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} \
+    go build -trimpath -ldflags="-s -w" -o /out/backend_app .
 
-# Build the application
-RUN CGO_ENABLED=0 GOOS=linux go build -installsuffix cgo -o backend_app .
-
-# Production stage - distroless
-FROM gcr.io/distroless/static-debian12:nonroot
-
+FROM gcr.io/distroless/static-debian12:nonroot AS runtime
 WORKDIR /app
-
-# Copy built application
-COPY --from=builder --chown=nonroot:nonroot /app/backend_app ./
-
-# Expose port
+ENV BACKEND_PORT=8201 \
+    GIN_MODE=release
+COPY --from=builder --chown=nonroot:nonroot /out/backend_app ./backend_app
 EXPOSE 8201
-
-# Default command
 ENTRYPOINT ["./backend_app"]

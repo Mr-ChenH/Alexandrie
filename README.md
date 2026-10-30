@@ -82,17 +82,18 @@ Get your instance running in less than a minute:
 
 ```bash
 # 1. Download the .env.example and docker-compose.yml files
-curl -O https://raw.githubusercontent.com/Smaug6739/Alexandrie/main/.env.example
-curl -O https://raw.githubusercontent.com/Smaug6739/Alexandrie/main/docker-compose.yml
+curl -O https://raw.githubusercontent.com/Mr-ChenH/Alexandrie/main/.env.example
+curl -O https://raw.githubusercontent.com/Mr-ChenH/Alexandrie/main/docker-compose.yml
 
 # 2. Configure environments
 cp .env.example .env
 
 # 3. Launch the stack
-docker compose up -d
+docker compose pull
+docker compose up -d --no-build
 ```
 
-Open <http://localhost:8200> to create your primary owner account.
+Open <http://localhost:8200> to create your primary owner account. Images for this fork are published to `ghcr.io/mr-chenh/alexandrie-{frontend,backend}` by GitHub Actions on pushes to `main` and published releases. See [Docker build and deployment](.github/DOCKER_BUILD.md) for first-time GHCR package visibility, image tags, runtime URLs, and local source builds.
 
 For advanced local development guidelines and technical architecture details, please refer to [CONTRIBUTING.md](./CONTRIBUTING.md).
 

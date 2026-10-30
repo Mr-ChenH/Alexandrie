@@ -1,47 +1,38 @@
 <template>
-  <LazyMarkdownEditor v-model="document" autofocus-title @save="data => save(data)" @exit="exit" @auto-save="savePending" />
+  <LazyMarkdownEditor v-model="document" autofocus-title :persist="persist" :draft-key="draftKey" @exit="exit" />
 </template>
+
 <script lang="ts" setup>
 import localForage from 'localforage';
 import type { Node } from '~/stores';
 
-definePageMeta({ breadcrumb: { i18n: 'common.actions.new' } });
-
+definePageMeta({ breadcrumb: { i18n: 'common.actions.new' }, key: route => route.fullPath });
 const store = useNodesStore();
-
-const notifications = useNotifications();
 const route = useRoute();
 const router = useRouter();
 const sidebar = useSidebar();
-
+const defaultParent = (route.query.parent_id as string) || sidebar.workspaceId.value || undefined;
+const draftKey = `new:${defaultParent || 'root'}`;
 const pendingNode = await localForage.getItem<Node>('pendingNode');
-
-let saved = false;
-
-const defaultParent = computed(() => (route.query.parent_id as string) || sidebar.workspaceId.value || undefined);
-const document: Ref<Partial<Node>> = ref({
+const document = ref<Partial<Node>>({
   accessibility: 1,
+  access: 2,
   role: 3,
   ...pendingNode,
-  parent_id: ['root', 'shared'].includes(defaultParent.value || '') ? undefined : defaultParent.value,
+  parent_id: ['root', 'shared'].includes(defaultParent || '') ? undefined : defaultParent,
 });
+let createdId: string | undefined;
 
-function save(doc: Partial<Node>) {
-  store
-    .post(doc)
-    .then(async d => {
-      notifications.add({ title: 'Document successfully posted', type: 'success' });
-      await localForage.removeItem('pendingNode');
-      saved = true;
-      router.push(`/dashboard/docs/edit/${d.id}`);
-    })
-    .catch(e => notifications.add({ message: e, title: 'Error', type: 'error' }));
+async function persist(snapshot: Partial<Node>): Promise<Node> {
+  const existingId = createdId || snapshot.id;
+  const saved = existingId
+    ? await store.update({ ...snapshot, id: existingId } as Node)
+    : await store.post(snapshot);
+  createdId = saved.id;
+  // Keep the same editor and caret; the first autosave must not redirect the user.
+  await localForage.removeItem('pendingNode');
+  return saved;
 }
 
-function savePending(node: Partial<Node>) {
-  if (saved) return;
-  localForage.setItem('pendingNode', toRaw(node));
-}
-
-const exit = () => router.push('/dashboard');
+const exit = (id?: string) => router.push(id ? `/dashboard/docs/${id}` : '/dashboard');
 </script>

@@ -1,4 +1,9 @@
 export default {
+  connection: {
+    localDataKept: "Le note e le bozze locali sono conservate. Accesso e sincronizzazione riprenderanno quando il servizio sarà disponibile.",
+    retry: "Riprova",
+    unavailable: "Impossibile connettersi al server",
+  },
   shortcuts: {
     boldText: 'Testo in grassetto',
     bulletList: 'Elenco puntato',

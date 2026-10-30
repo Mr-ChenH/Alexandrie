@@ -12,8 +12,12 @@ export default defineNuxtRouteMiddleware(async (to, _) => {
   }
 
   if (to.fullPath.startsWith('/dashboard/admin')) {
-    const user = await useUserStore().fetch();
-    if (user && user.role === 2) return;
+    try {
+      const user = await useUserStore().fetch();
+      if (user && user.role === 2) return;
+    } catch (error) {
+      console.warn('[auth] Could not verify administrator access', error);
+    }
     return navigateTo({
       path: '/dashboard',
     });

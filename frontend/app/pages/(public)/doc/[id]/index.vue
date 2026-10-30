@@ -72,7 +72,7 @@ const resource = computed(() => data.value?.node);
 const mimeType = computed(() => data.value?.node?.metadata?.filetype || '');
 const hasFile = computed(() => data.value?.node?.role === 4);
 
-const baseUrl = requestUrl.origin || __BASE_URL__;
+const baseUrl = (useRuntimeConfig().public.baseUrl || requestUrl.origin).replace(/\/+$/, '');
 
 useSeoMeta({
   title: () => data.value?.node?.name || 'Unknown document',

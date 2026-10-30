@@ -1,4 +1,9 @@
 export default {
+  connection: {
+    localDataKept: "Local notes and drafts are retained. Sign-in and server sync will resume when the service is available.",
+    retry: "Retry connection",
+    unavailable: "Cannot connect to the server",
+  },
   shortcuts: {
     boldText: 'Bold text',
     bulletList: 'Bullet list',

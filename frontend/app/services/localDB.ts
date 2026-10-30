@@ -49,8 +49,8 @@ export const LocalDbService = {
   async saveUpdateDelta(node: Node): Promise<void> {
     const currentDelta = await deltaStorage.getItem<OfflineDelta>(node.id);
     if (currentDelta) {
-      currentDelta.node = JSON.parse(JSON.stringify(node));
       node.updated_timestamp = Date.now();
+      currentDelta.node = JSON.parse(JSON.stringify(node));
       await deltaStorage.setItem(node.id, currentDelta);
       return;
     }
@@ -87,6 +87,10 @@ export const LocalDbService = {
       deltas.push(value);
     });
     return deltas.sort((a, b) => a.order - b.order);
+  },
+
+  async getDelta(id: string): Promise<OfflineDelta | null> {
+    return deltaStorage.getItem<OfflineDelta>(id);
   },
 
   async removeDelta(id: string): Promise<void> {

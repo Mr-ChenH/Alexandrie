@@ -2,6 +2,10 @@
   <div class="modal-content">
     <h2>{{ t('settings.editor.title') }}</h2>
     <form @submit.prevent>
+      <div class="row">
+        <label>{{ t('settings.editor.enableAutoSave') }}</label>
+        <AppToggle v-model="store.get('documentAutoSave').value" />
+      </div>
       <label for="category">{{ t('settings.editor.fontFamily') }}</label>
       <AppSelect v-model="store.get('editorFontFamily').value" :items="EDITOR_FONTS" placeholder="Select theme" />
       <label for="category">{{ t('settings.editor.fontSize') }}</label>

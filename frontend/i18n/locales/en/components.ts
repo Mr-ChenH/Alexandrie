@@ -38,11 +38,27 @@ export default {
   },
 
   editor: {
+    autosaveOff: 'Auto-save off',
+    autosaveOn: 'Auto-save on',
+    draftUnavailable: 'Could not store a recovery draft. Save before leaving this page.',
+    error: 'Could not save · draft kept locally',
+    layout: 'Editor layout',
+    local: 'Saved on this device · waiting to sync',
     placeholder: {
       description: 'Document description',
       title: 'Document title',
     },
+    recovery: 'A local draft differs from the saved note. Choose which version to continue with.',
+    restoreDraft: 'Restore draft',
+    retry: 'Retry',
+    saved: 'Saved',
+    savePending: 'Waiting to save…',
+    saving: 'Saving…',
+    split: 'Split view',
     title: 'Markdown editor',
+    unsaved: 'Unsaved changes',
+    untitled: 'Untitled note',
+    useSaved: 'Use saved note',
   },
 
   filter: {

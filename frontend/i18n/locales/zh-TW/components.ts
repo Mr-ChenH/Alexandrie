@@ -38,11 +38,27 @@ export default {
   },
 
   editor: {
+    autosaveOff: '自動儲存已關閉',
+    autosaveOn: '自動儲存已開啟',
+    draftUnavailable: '無法儲存本機草稿，離開頁面前請先儲存。',
+    error: '儲存失敗 · 草稿保留在此裝置',
+    layout: '編輯器檢視',
+    local: '已儲存在此裝置 · 等待同步',
     placeholder: {
       description: '文件描述',
       title: '文件標題',
     },
+    recovery: '發現與已儲存筆記不同的本機草稿，請選擇要繼續編輯的版本。',
+    restoreDraft: '還原草稿',
+    retry: '重試',
+    saved: '已儲存',
+    savePending: '等待儲存…',
+    saving: '正在儲存…',
+    split: '分割檢視',
     title: 'Markdown 編輯器',
+    unsaved: '有未儲存的變更',
+    untitled: '未命名筆記',
+    useSaved: '使用已儲存版本',
   },
 
   filter: {

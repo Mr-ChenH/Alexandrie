@@ -38,11 +38,27 @@ export default {
   },
 
   editor: {
+    autosaveOff: 'Salvataggio automatico disattivato',
+    autosaveOn: 'Salvataggio automatico attivo',
+    draftUnavailable: 'Impossibile conservare la bozza. Salva prima di uscire.',
+    error: 'Salvataggio non riuscito · bozza conservata',
+    layout: 'Vista editor',
+    local: 'Salvato sul dispositivo · in attesa di sincronizzazione',
     placeholder: {
       description: 'Descrizione del documento',
       title: 'Titolo del documento',
     },
+    recovery: 'Una bozza locale è diversa dalla nota salvata. Scegli quale versione usare.',
+    restoreDraft: 'Ripristina bozza',
+    retry: 'Riprova',
+    saved: 'Salvato',
+    savePending: 'In attesa di salvataggio…',
+    saving: 'Salvataggio…',
+    split: 'Vista divisa',
     title: 'Editor Markdown',
+    unsaved: 'Modifiche non salvate',
+    untitled: 'Nota senza titolo',
+    useSaved: 'Usa nota salvata',
   },
 
   filter: {

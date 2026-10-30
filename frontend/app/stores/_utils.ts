@@ -4,6 +4,8 @@
  * SSR-compatible with proper cookie handling
  */
 
+import { resolveApiBase } from '~/helpers/api-base';
+
 export interface APIResult<Data> {
   status: 'success' | 'error';
   message: string;
@@ -16,6 +18,7 @@ export interface FetchOptions {
 }
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+interface RequestOptions { timeout?: number }
 
 /** Singleton promise to prevent concurrent token refresh */
 let refreshPromise: Promise<void> | null = null;
@@ -26,7 +29,7 @@ let refreshPromise: Promise<void> | null = null;
  */
 function getApiBaseUrl(): string {
   const config = useRuntimeConfig();
-  return `${config.public.baseApi}/api`;
+  return resolveApiBase(config.public.baseApi, config.baseApiInternal, import.meta.server);
 }
 
 /**
@@ -57,7 +60,7 @@ function buildRequestHeaders(body: object): HeadersInit {
  * Low-level fetch using Nuxt's $fetch
  * Provides error handling and automatic response parsing
  */
-async function apiFetch<T>(route: string, method: HttpMethod, body: object): Promise<APIResult<T> & { _statusCode?: number }> {
+async function apiFetch<T>(route: string, method: HttpMethod, body: object, options: RequestOptions = {}): Promise<APIResult<T> & { _statusCode?: number }> {
   const baseUrl = getApiBaseUrl();
   const normalizedRoute = normalizeRoute(route);
 
@@ -66,6 +69,7 @@ async function apiFetch<T>(route: string, method: HttpMethod, body: object): Pro
     body: buildRequestBody(method, body),
     headers: buildRequestHeaders(body),
     credentials: 'include',
+    timeout: options.timeout,
     // Prevent $fetch from throwing on non-2xx responses to handle them manually
     ignoreResponseError: true,
   });
@@ -142,9 +146,9 @@ function isAuthError(response: APIResult<unknown> & { _statusCode?: number }): b
  * @param body - Request body (ignored for GET/DELETE)
  * @returns APIResult with status, message, and optional result
  */
-export async function makeRequest<T>(route: string, method: HttpMethod, body: object = {}): Promise<APIResult<T>> {
+export async function makeRequest<T>(route: string, method: HttpMethod, body: object = {}, options: RequestOptions = {}): Promise<APIResult<T>> {
   try {
-    const response = await apiFetch<T>(route, method, body);
+    const response = await apiFetch<T>(route, method, body, options);
 
     // Success case
     if (response.status === 'success') {
@@ -157,7 +161,7 @@ export async function makeRequest<T>(route: string, method: HttpMethod, body: ob
         await refreshAccessToken();
 
         // Retry the original request after successful refresh
-        const retryResponse = await apiFetch<T>(route, method, body);
+        const retryResponse = await apiFetch<T>(route, method, body, options);
         return retryResponse;
       } catch {
         return {

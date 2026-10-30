@@ -1,38 +1,19 @@
-# Frontend Dockerfile for Alexandrie - Runtime build with build-time config
-FROM node:24-alpine
+# syntax=docker/dockerfile:1
 
-# Install bun
-RUN apk add --no-cache curl unzip bash && \
-    curl -fsSL https://bun.sh/install | bash && \
-    cp /root/.bun/bin/bun /usr/local/bin/bun && \
-    chmod +x /usr/local/bin/bun
-
-# Create app user
-RUN addgroup -g 1001 -S appgroup && \
-    adduser -S appuser -G appgroup -u 1001
-
+FROM oven/bun:1.4.4 AS bun
+FROM node:24-bookworm-slim
+COPY --from=bun /usr/local/bin/bun /usr/local/bin/bun
 WORKDIR /app
+RUN chown node:node /app
+USER node
 
-# Copy package files and install dependencies as root
-COPY package.json bun.lock ./
-RUN bun install
+COPY --chown=node:node package.json bun.lock ./
+RUN bun install --frozen-lockfile --ignore-scripts
+COPY --chown=node:node . .
+RUN bun run postinstall
 
-
-# Switch to app user
-USER appuser
-
-# Expose port
+ENV NODE_ENV=development \
+    HOST=0.0.0.0 \
+    PORT=8200
 EXPOSE 8200
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
-    CMD curl -f http://localhost:8200/ || exit 1
-
-# Runtime environment variables - can be overridden at container startup
-ENV NODE_ENV=production
-ENV PORT=8200
-ENV VITE_BASE_API=""
-ENV VITE_BASE_CDN=""
-ENV NUXT_PUBLIC_BASE_URL=""
-
-CMD ["bun", "run", "dev:host"]
+CMD ["bun", "run", "dev:host", "--port", "8200"]

@@ -117,6 +117,7 @@ export function useCommandCenter() {
 
   return {
     // State (readonly for external access)
+    isOpen: computed(() => state.isOpen),
     searchQuery: computed(() => state.searchQuery),
     selectedIndex: computed(() => state.selectedIndex),
     activeTab: computed(() => state.activeTab),

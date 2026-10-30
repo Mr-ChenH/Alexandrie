@@ -18,6 +18,8 @@ const { isLoading } = useAppState();
 const router = useRouter();
 const route = useRoute();
 const requestUrl = useRequestURL();
+const config = useRuntimeConfig();
+const baseUrl = computed(() => (config.public.baseUrl || requestUrl.origin).replace(/\/+$/, ''));
 const { t, locale } = useI18n();
 const i18nHead = useLocaleHead();
 
@@ -28,28 +30,28 @@ router.beforeEach((to, from) => {
   return;
 });
 
-const canonicalUrl = computed(() => new URL(route.path, requestUrl.origin || __BASE_URL__).toString());
+const canonicalUrl = computed(() => new URL(route.path, baseUrl.value).toString());
 
 useHead({
   link: [
     {
       rel: 'canonical',
-      href: __BASE_URL__,
+      href: canonicalUrl,
     },
     {
       rel: 'preconnect',
-      href: __BASE_API__,
+      href: config.public.baseApi || undefined,
     },
     {
       rel: 'preconnect',
-      href: __BASE_CDN__,
+      href: config.public.baseCdn || undefined,
     },
     ...(i18nHead.value.link || []),
   ],
   meta: [
     {
       property: 'og:url',
-      content: __BASE_URL__,
+      content: canonicalUrl,
     },
   ],
   htmlAttrs: {
@@ -92,11 +94,11 @@ useSeoMeta({
   ogDescription: () => t('landing.seo.description'),
   ogType: 'website',
   ogUrl: () => canonicalUrl.value,
-  ogImage: () => `${requestUrl.origin || __BASE_URL__}/icons/icon-192.png`,
+  ogImage: () => `${baseUrl.value}/icons/icon-192.png`,
   twitterCard: 'summary_large_image',
   twitterTitle: () => t('landing.seo.title'),
   twitterDescription: () => t('landing.seo.description'),
-  twitterImage: () => `${requestUrl.origin || __BASE_URL__}/screenshots/mock/0.png`,
+  twitterImage: () => `${baseUrl.value}/screenshots/mock/0.png`,
 });
 </script>
 

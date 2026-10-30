@@ -210,7 +210,7 @@ const structureTools = computed<ToolItem[]>(() => [
   { name: t('markdown.toolbar.horizontalRule'), icon: 'format/horizontal-rule', action: 'horizontalRule', shortcut: 'Ctrl+Shift+R' },
 ]);
 
-const actionTools = computed<ToolItem[]>(() => [{ name: t('markdown.toolbar.preview'), icon: 'preview', action: 'preview', shortcut: 'Ctrl+P' }]);
+const actionTools = computed<ToolItem[]>(() => [{ name: t('markdown.toolbar.preview'), icon: 'preview', action: 'preview', shortcut: 'Ctrl+Alt+P' }]);
 </script>
 <style scoped lang="scss">
 .toolbar {

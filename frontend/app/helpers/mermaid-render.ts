@@ -8,9 +8,16 @@ function loadMermaid() {
   return mermaidPromise;
 }
 
-// Diagrams render sequentially (not Promise.all) to avoid mermaid's internal
-// render state being shared across concurrent calls.
-export async function renderMermaidDiagrams(root: HTMLElement, options: RenderMermaidOptions): Promise<void> {
+// Preview updates and PDF rendering share Mermaid's global state. Serialize
+// entire batches, including initialize(), rather than only diagrams in one batch.
+let renderQueue: Promise<void> = Promise.resolve();
+export function renderMermaidDiagrams(root: HTMLElement, options: RenderMermaidOptions): Promise<void> {
+  const next = renderQueue.catch(() => undefined).then(() => renderBatch(root, options));
+  renderQueue = next;
+  return next;
+}
+
+async function renderBatch(root: HTMLElement, options: RenderMermaidOptions): Promise<void> {
   const elements = Array.from(root.querySelectorAll<HTMLElement>('pre.mermaid'));
   if (!elements.length) return;
 
@@ -18,6 +25,7 @@ export async function renderMermaidDiagrams(root: HTMLElement, options: RenderMe
   mermaid.initialize({ startOnLoad: false, securityLevel: 'strict', theme: options.dark ? 'dark' : 'default' });
 
   for (const el of elements) {
+    if (!root.contains(el)) continue;
     const source = el.dataset.mermaidSource ?? el.textContent ?? '';
     el.dataset.mermaidSource ??= source;
 

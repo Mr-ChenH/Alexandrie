@@ -1,4 +1,9 @@
 export default {
+  connection: {
+    localDataKept: "Les notes et brouillons locaux sont conservés. La connexion et la synchronisation reprendront quand le service sera disponible.",
+    retry: "Réessayer",
+    unavailable: "Connexion au serveur impossible",
+  },
   shortcuts: {
     boldText: 'Mettre le texte en gras',
     bulletList: 'Liste à puces',

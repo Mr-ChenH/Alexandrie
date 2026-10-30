@@ -38,11 +38,27 @@ export default {
   },
 
   editor: {
+    autosaveOff: 'Enregistrement automatique désactivé',
+    autosaveOn: 'Enregistrement automatique activé',
+    draftUnavailable: 'Impossible de conserver le brouillon. Enregistrez avant de quitter.',
+    error: 'Échec de l’enregistrement · brouillon conservé',
+    layout: 'Affichage de l’éditeur',
+    local: 'Enregistré sur cet appareil · synchronisation en attente',
     placeholder: {
       description: 'Document description',
       title: 'Document title',
     },
+    recovery: 'Un brouillon local diffère de la note enregistrée. Choisissez la version à utiliser.',
+    restoreDraft: 'Restaurer le brouillon',
+    retry: 'Réessayer',
+    saved: 'Enregistré',
+    savePending: 'En attente d’enregistrement…',
+    saving: 'Enregistrement…',
+    split: 'Vue partagée',
     title: 'Éditeur Markdown',
+    unsaved: 'Modifications non enregistrées',
+    untitled: 'Note sans titre',
+    useSaved: 'Utiliser la note enregistrée',
   },
 
   filter: {

@@ -1,4 +1,9 @@
 export default {
+  connection: {
+    localDataKept: "本地笔记和草稿已保留。服务器恢复后才能登录和同步。",
+    retry: "重试连接",
+    unavailable: "暂时无法连接服务器",
+  },
   shortcuts: {
     boldText: '加粗文字',
     bulletList: '无序列表',

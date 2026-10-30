@@ -1,9 +1,27 @@
 <!-- eslint-disable vue/no-v-html -->
 <template>
-  <div class="editor-wrapper">
+  <div class="editor-wrapper" @compositionstart="startComposition" @compositionend="finishComposition">
     <Teleport v-if="!public" to="#navbar-title"> {{ t('components.editor.title') }}</Teleport>
 
-    <div class="editor-container">
+    <div v-if="recovery" class="recovery-banner" role="alert">
+      <span>{{ t('components.editor.recovery') }}</span>
+      <AppButton type="primary" small @click="restoreDraft">{{ t('components.editor.restoreDraft') }}</AppButton>
+      <AppButton type="secondary" small @click="discardDraft">{{ t('components.editor.useSaved') }}</AppButton>
+    </div>
+    <div class="editor-container" :inert="recovery ? true : undefined">
+      <div class="editor-controls">
+        <div class="layout-controls" role="group" :aria-label="t('components.editor.layout')">
+          <button :class="{ selected: layout === 'edit' }" :aria-pressed="layout === 'edit'" @click="setLayout('edit')"><Icon name="editor" display="sm" />{{ t('common.actions.edit') }}</button>
+          <button :class="{ selected: layout === 'split' }" :aria-pressed="layout === 'split'" @click="setLayout('split')"><Icon name="view" display="sm" />{{ t('components.editor.split') }}</button>
+          <button :class="{ selected: layout === 'preview' }" :aria-pressed="layout === 'preview'" @click="setLayout('preview')"><Icon name="preview" display="sm" />{{ t('common.actions.preview') }}</button>
+        </div>
+        <div class="save-status" :class="status" role="status" aria-live="polite">
+          <Icon :name="status === 'error' ? 'warning' : status === 'local' ? 'no_synced' : status === 'saved' ? 'check' : 'save'" display="sm" />
+          <span>{{ statusLabel }}</span>
+          <button v-if="status === 'error' || status === 'local'" class="retry-save" @click="save">{{ t('components.editor.retry') }}</button>
+        </div>
+      </div>
+      <p v-if="draftWarning" class="draft-warning" role="alert">{{ t('components.editor.draftUnavailable') }}</p>
       <!-- Toolbar Section -->
 
       <Toolbar v-model="document" :public="public" @execute-action="handleToolbarAction" />
@@ -17,22 +35,21 @@
             :autofocus="autofocusTitle"
             :placeholder="t('components.editor.placeholder.title')"
             class="meta-title"
-            required
-            @input="autoSaveConditional"
+            :aria-label="t('components.editor.placeholder.title')"
           />
           <input
             v-model="document.description"
             :placeholder="t('components.editor.placeholder.description')"
             class="meta-description"
-            @input="autoSaveConditional"
+            :aria-label="t('components.editor.placeholder.description')"
           />
         </div>
-        <AppTagInput v-model="document.tags" display="row" minimal @update:model-value="autoSaveConditional" />
+        <AppTagInput v-model="document.tags" display="row" minimal />
       </div>
 
       <!-- Editor Content Section -->
-      <div ref="container" class="editor-content">
-        <div class="editor-panel" :class="{ 'with-preview': showPreview }">
+      <div class="editor-content" :class="`layout-${layout}`">
+        <div v-show="layout !== 'preview'" class="editor-panel" :class="{ 'with-preview': layout === 'split' }">
           <div ref="editorContainer" class="codemirror-editor" :class="{ 'scroll-beyond-last-line': scrollBeyondLastLine }" />
         </div>
 
@@ -40,7 +57,7 @@
           <div class="panel-header">
             <span class="panel-label">{{ t('common.actions.preview') }}</span>
           </div>
-          <NodeDocumentContentCompiled ref="markdownPreviewComponent" :node="document" />
+          <NodeDocumentContentCompiled ref="markdownPreviewComponent" :node="document" :interactive="false" />
           <DrawioSidebar :diagrams="referencedDrawioResources" />
         </div>
       </div>
@@ -58,173 +75,383 @@ import { createSnippetSource } from './modules/editorUtils';
 import { createInternalLinks } from './modules/internalLinks';
 import { createCommands } from './modules/editorCommands';
 import { createScrollSync } from './modules/scrollSync';
+import { createAutosave, type SaveStatus } from '~/helpers/editor-autosave';
+import { editorDraftKey, editorSignature, readEditorDraft, writeEditorDraft, type EditorDraft } from '~/helpers/editor-draft';
 import compile from '~/helpers/markdown';
 import Toolbar from './Toolbar.vue';
 import DrawioSidebar from './DrawioSidebar.vue';
 import NodeDocumentContentCompiled from '~/components/Node/Document/ContentCompiled.vue';
-
 import type { Node } from '~/stores';
 
 const { t } = useI18nT();
 const resourcesStore = useResourcesStore();
 const nodesStore = useNodesStore();
+const userStore = useUserStore();
 const preferences = usePreferencesStore();
-
-const props = defineProps<{ public?: boolean; autofocusTitle?: boolean }>();
-const emit = defineEmits<{
-  (e: 'save' | 'autoSave', doc: Partial<Node>): void;
-  (e: 'exit'): void;
+const { isMobile } = useDevice();
+const props = defineProps<{
+  public?: boolean;
+  autofocusTitle?: boolean;
+  draftKey?: string;
+  persist: (document: Partial<Node>) => Promise<Node>;
 }>();
-
+const emit = defineEmits<{ exit: [id?: string] }>();
+const document = defineModel<Partial<Node>>({ required: true });
 const editorContainer = ref<HTMLDivElement>();
 const titleInput = ref<HTMLInputElement>();
 const markdownPreviewComponent = ref<InstanceType<typeof NodeDocumentContentCompiled>>();
 const markdownPreview = computed(() => markdownPreviewComponent.value?.rootElement as HTMLElement | undefined);
-const editorView = ref<EditorView | null>(null);
-const showPreview = ref(false);
-
+const editorView = shallowRef<EditorView | null>(null);
+const layout = ref<'edit' | 'split' | 'preview'>(isMobile.value ? 'edit' : preferences.get('editorLayout').value);
+const showPreview = computed({ get: () => layout.value !== 'edit', set: value => setLayout(value ? 'split' : 'edit') });
 const autoSaveEnabled = preferences.get('documentAutoSave');
 const scrollBeyondLastLine = preferences.get('editorScrollBeyondLastLine');
-
-const scrollSync = createScrollSync({
-  getView: () => editorView.value as EditorView | null,
-  getPreview: () => markdownPreview.value,
-});
-
+const status = ref<SaveStatus>('idle');
+const recovery = ref<EditorDraft>();
+const draftWarning = ref(false);
+const composing = ref(false);
+let previewTimer: ReturnType<typeof setTimeout> | undefined;
+let draftTimer: ReturnType<typeof setTimeout> | undefined;
+let retryTimer: ReturnType<typeof setTimeout> | undefined;
+let baseUpdatedAt = document.value.updated_timestamp || 0;
+let disposed = false;
+const storageKey = editorDraftKey(userStore.user?.id || document.value.user_id || 'local', props.draftKey || document.value.id || 'new');
+const scrollSync = createScrollSync({ getView: () => editorView.value, getPreview: () => markdownPreview.value });
 const resolveNode = (id: string) => nodesStore.getById(id)?.name;
 
-const document = defineModel<Partial<Node>>({ required: true });
+const statusLabel = computed(() => {
+  if (status.value === 'idle') return t(autoSaveEnabled.value ? 'components.editor.autosaveOn' : 'components.editor.autosaveOff');
+  if (status.value === 'dirty') return t(autoSaveEnabled.value ? 'components.editor.savePending' : 'components.editor.unsaved');
+  return t(`components.editor.${status.value}`);
+});
+
+function renderPreview() {
+  clearTimeout(previewTimer);
+  document.value.content_compiled = compile(document.value.content || '', resolveNode);
+}
+
+function snapshot(): Partial<Node> {
+  // Read synchronously before persistence; compilation must not lag a save request.
+  if (editorView.value) document.value.content = editorView.value.state.doc.toString();
+  renderPreview();
+  return { ...document.value, name: document.value.name?.trim() || t('components.editor.untitled') };
+}
+
+function persistDraft(): boolean {
+  clearTimeout(draftTimer);
+  if (recovery.value || !saver.dirty && status.value !== 'local' && status.value !== 'error') return true;
+  try {
+    writeEditorDraft(localStorage, storageKey, document.value, baseUpdatedAt);
+    draftWarning.value = false;
+    return true;
+  } catch {
+    draftWarning.value = true;
+    return false;
+  }
+}
+
+function removeDraft() {
+  clearTimeout(draftTimer);
+  try { localStorage.removeItem(storageKey); } catch { /* Storage may be disabled. */ }
+}
+
+const saver = createAutosave({
+  snapshot,
+  persist: data => props.persist(data),
+  enabled: () => autoSaveEnabled.value && !composing.value && !recovery.value,
+  canPersist: () => !composing.value && !recovery.value,
+  isLocal: node => node.synced === false,
+  onStatus: value => { status.value = value; },
+  onResult: (node, current) => {
+    baseUpdatedAt = node.updated_timestamp || baseUpdatedAt;
+    document.value = { ...document.value, id: node.id, user_id: node.user_id, synced: node.synced, partial: false, updated_timestamp: node.updated_timestamp };
+    if (current && node.synced !== false) removeDraft();
+    else {
+      if (node.synced === false) status.value = 'local';
+      persistDraft();
+    }
+    clearTimeout(retryTimer);
+    if (node.synced === false) retryTimer = setTimeout(() => { if (navigator.onLine) void reconnect(); }, 10000);
+  },
+});
+
+function changed() {
+  if (disposed || recovery.value) return;
+  saver.change();
+  clearTimeout(draftTimer);
+  draftTimer = setTimeout(persistDraft, 120);
+}
 
 const commands = createCommands({
-  getView: () => editorView.value as EditorView | null,
+  getView: () => editorView.value,
   getDoc: () => document.value as Node,
-  setDoc: d => (document.value = d),
+  setDoc: data => { document.value = data; },
   showPreview,
-  save: () => save(),
+  save: () => { void save(); },
 });
-
-const uploadsHandlers = createUploadsHandlers({
-  resourcesStore,
-  nodeId: document.value.id,
-  insertText: (t: string) => commands.exec('insertText', t),
-});
-
-const referencedDrawioResources = computed(() => {
-  const diagrams: Node[] = [];
-  nodesStore.resources.forEach((resource: Node) => {
-    if (resource.metadata?.drawio && resource.parent_id == document.value.id) diagrams.push(resource);
-  });
-
-  return diagrams;
-});
-
+const uploadsHandlers = createUploadsHandlers({ resourcesStore, nodeId: () => document.value.id, insertText: text => commands.exec('insertText', text) });
+const referencedDrawioResources = computed(() => nodesStore.resources.filter(resource => resource.metadata?.drawio && resource.parent_id === document.value.id));
 const state = createEditorState({
   initialDoc: document.value.content || '',
   spellCheck: preferences.get('editorSpellCheck'),
   themeExtension: loadTheme(),
   keymaps: createKeymaps(commands),
   snippetSource: createSnippetSource(preferences.get('editorSnippetsEnabled'), preferences.get('snippets')),
-  internalLinks: createInternalLinks({
-    getName: id => nodesStore.getById(id)?.name,
-    getDocuments: () => nodesStore.documents,
-  }),
-  onDocChanged: () => {
-    updateDocumentContent();
-    autoSaveConditional();
+  internalLinks: createInternalLinks({ getName: resolveNode, getDocuments: () => nodesStore.documents }),
+  onDocChanged: (content, isComposing) => {
+    if (isComposing) composing.value = true;
+    document.value.content = content;
   },
   uploadsHandlers,
 });
 
-onMounted(() => {
-  if (props.autofocusTitle) titleInput.value?.focus();
-  if (!editorContainer.value) return;
-  editorView.value = new EditorView({
-    state,
-    parent: editorContainer.value,
+watch(() => editorSignature(document.value), () => {
+  if (recovery.value) return;
+  const view = editorView.value;
+  if (view && view.state.doc.toString() !== (document.value.content || '')) {
+    view.dispatch({ changes: { from: 0, to: view.state.doc.length, insert: document.value.content || '' } });
+  }
+  clearTimeout(previewTimer);
+  previewTimer = setTimeout(renderPreview, 120);
+  changed();
+}, { flush: 'sync' });
+
+watch(autoSaveEnabled, enabled => {
+  if (enabled && saver.dirty) saver.schedule();
+  else if (!enabled) saver.cancelTimers();
+});
+
+watch(() => document.value.content_compiled, () => nextTick(scrollSync.syncEditorToPreview));
+
+function setLayout(value: 'edit' | 'split' | 'preview') {
+  layout.value = value;
+  preferences.set('editorLayout', value);
+  renderPreview();
+  void nextTick(() => {
+    editorView.value?.requestMeasure();
+    if (value !== 'preview') editorView.value?.focus();
+    scrollSync.syncEditorToPreview();
   });
-  editorView.value.scrollDOM.addEventListener('scroll', scrollSync.syncEditorToPreview);
-  window.addEventListener('keydown', handleGlobalKeys);
-});
+}
 
-onBeforeUnmount(() => {
-  if (autoSaveEnabled.value) {
-    updateDocumentContent();
-    emit('autoSave', document.value);
-  }
-  if (editorView.value) editorView.value.destroy();
-  editorView.value?.scrollDOM.removeEventListener('scroll', scrollSync.syncEditorToPreview);
-  scrollSync.dispose();
-  window.removeEventListener('keydown', handleGlobalKeys);
-});
+async function save() {
+  if (recovery.value || composing.value) return;
+  clearTimeout(retryTimer);
+  snapshot();
+  persistDraft();
+  if (!saver.dirty && (status.value === 'local' || status.value === 'error' || !document.value.id)) saver.change();
+  await saver.flush();
+}
 
-function handleGlobalKeys(e: KeyboardEvent) {
-  if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-    e.preventDefault();
-    save();
+async function reconnect() {
+  if (disposed || !autoSaveEnabled.value || recovery.value) return;
+  if (status.value !== 'local' && status.value !== 'error' && !saver.dirty) return;
+  await nodesStore.syncLocalDeltas();
+  if (disposed) return;
+  saver.change();
+  await saver.flush();
+}
+
+function startComposition() {
+  composing.value = true;
+  saver.cancelTimers();
+}
+
+function finishComposition() {
+  composing.value = false;
+  void nextTick(() => {
+    if (editorView.value) document.value.content = editorView.value.state.doc.toString();
+    if (saver.dirty) saver.schedule();
+  });
+}
+
+function handleGlobalKeys(event: KeyboardEvent) {
+  if (event.defaultPrevented || event.isComposing || composing.value || useModal().modals.value.length || useCommandCenter().isOpen?.value) return;
+  if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 's' && !event.shiftKey && !event.altKey) {
+    event.preventDefault();
+    void save();
   }
-  if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
-    e.preventDefault();
-    showPreview.value = !showPreview.value;
-  }
-  if (e.key === 'Escape') {
-    emit('exit');
+  if ((event.ctrlKey || event.metaKey) && event.altKey && event.key.toLowerCase() === 'p') {
+    event.preventDefault();
+    setLayout(layout.value === 'edit' ? 'split' : 'edit');
   }
 }
 
 function handleToolbarAction(action: string, payload?: string) {
-  commands.exec(action, payload);
+  if (action === 'save') return void save();
+  if (action === 'preview') return setLayout(layout.value === 'edit' ? 'split' : 'edit');
+  if (action === 'goto') return void exit();
+  if (layout.value === 'preview') {
+    setLayout('split');
+    void nextTick(() => { commands.exec(action, payload); });
+  } else commands.exec(action, payload);
 }
-// Re-sync scroll after the preview DOM updates (e.g. after typing new content)
-watch(
-  () => document.value.content_compiled,
-  () => {
-    nextTick(() => scrollSync.syncEditorToPreview());
-  },
-);
 
-function autoSaveConditional() {
+function restoreDraft() {
+  const draft = recovery.value;
+  if (!draft) return;
+  recovery.value = undefined;
+  document.value = { ...document.value, ...draft.document };
+  renderPreview();
+  // Even an identical draft may represent an offline write awaiting retry.
+  if (!saver.dirty) changed();
+}
+
+function discardDraft() {
+  recovery.value = undefined;
+  removeDraft();
+}
+
+async function prepareLeave(): Promise<boolean> {
+  if (recovery.value) return true;
+  snapshot();
+  const local = persistDraft();
   if (autoSaveEnabled.value) {
-    autoSave();
+    const saved = await saver.flush();
+    return saved || local;
   }
+  return !saver.dirty || local;
 }
 
-const updateDocumentContent = debounce(() => {
-  const content = editorView.value?.state.doc.toString() || '';
-  document.value.content = content;
-  document.value.content_compiled = compile(content, resolveNode);
-}, 100);
+async function exit() {
+  if (await prepareLeave()) emit('exit', document.value.id);
+}
 
-const save = debounce(() => {
-  if (!document.value.name?.trim()) {
-    titleInput.value?.focus();
-    titleInput.value?.reportValidity();
-    return;
-  }
-  updateDocumentContent();
-  emit('save', document.value);
-}, 1000);
+function beforeUnload(event: BeforeUnloadEvent) {
+  if (!persistDraft() && saver.dirty) { event.preventDefault(); event.returnValue = ''; }
+}
+function visibilityChanged() {
+  if (window.document.visibilityState !== 'hidden') return;
+  persistDraft();
+  if (autoSaveEnabled.value && !composing.value) void saver.flush();
+}
 
-const autoSave = debounceDelayed(() => {
-  // New documents persist locally before they have a title; existing documents
-  // must never overwrite their saved title with an empty value.
-  if (document.value.id && !document.value.name?.trim()) return;
-  updateDocumentContent();
-  emit('autoSave', document.value);
-}, 2000);
+onBeforeRouteLeave(prepareLeave);
+onBeforeRouteUpdate(prepareLeave);
+onMounted(() => {
+  const draft = readEditorDraft(localStorage, storageKey);
+  if (draft && editorSignature(draft.document) !== editorSignature(document.value)) recovery.value = draft;
+  else if (draft) removeDraft();
+  renderPreview();
+  if (!editorContainer.value) return;
+  editorView.value = new EditorView({ state, parent: editorContainer.value });
+  editorView.value.scrollDOM.addEventListener('scroll', scrollSync.syncEditorToPreview);
+  window.addEventListener('keydown', handleGlobalKeys);
+  window.addEventListener('beforeunload', beforeUnload);
+  window.addEventListener('pagehide', persistDraft);
+  window.addEventListener('online', reconnect);
+  window.document.addEventListener('visibilitychange', visibilityChanged);
+  if (props.autofocusTitle && !recovery.value) titleInput.value?.focus();
+});
+onBeforeUnmount(() => {
+  persistDraft();
+  disposed = true;
+  saver.dispose();
+  clearTimeout(previewTimer);
+  clearTimeout(draftTimer);
+  clearTimeout(retryTimer);
+  editorView.value?.scrollDOM.removeEventListener('scroll', scrollSync.syncEditorToPreview);
+  editorView.value?.destroy();
+  scrollSync.dispose();
+  window.removeEventListener('keydown', handleGlobalKeys);
+  window.removeEventListener('beforeunload', beforeUnload);
+  window.removeEventListener('pagehide', persistDraft);
+  window.removeEventListener('online', reconnect);
+  window.document.removeEventListener('visibilitychange', visibilityChanged);
+});
 </script>
 
 <style scoped lang="scss">
 .editor-wrapper {
+  display: flex;
+  flex-direction: column;
   height: 100%;
+  min-height: 0;
   padding: 0;
+}
+
+.editor-controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 2px 4px;
+}
+
+.layout-controls {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-raised-light);
+
+  button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    font-size: 12px;
+    color: var(--text-secondary);
+
+    &.selected {
+      color: var(--primary);
+      background: var(--primary-bg);
+    }
+  }
+}
+
+.save-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-secondary);
+
+  &.saved { color: var(--green); }
+  &.error { color: var(--red); }
+  &.local { color: var(--orange); }
+}
+
+.retry-save {
+  padding: 3px 6px;
+  font-size: inherit;
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+.recovery-banner {
+  display: flex;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 8px 0;
+  padding: 12px;
+  border: 1px solid var(--primary-border);
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  background: var(--primary-bg);
+}
+
+.draft-warning {
+  margin: 4px 0;
+  font-size: 12px;
+  color: var(--red);
+}
+
+.layout-preview .preview-panel {
+  max-height: none;
 }
 
 .editor-container {
   display: flex;
+  flex: 1;
   flex-direction: column;
   gap: 4px;
   width: 100%;
-  height: 100%;
+  min-height: 0;
 }
 
 // Compact Document Metadata - Single line

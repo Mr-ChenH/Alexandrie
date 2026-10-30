@@ -1,0 +1,15 @@
+.git
+.env
+.env.*
+vendor
+backend_app
+*.exe
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+*.log
+coverage
+Dockerfile*
+.dockerignore

@@ -112,7 +112,7 @@ export const useUserStore = defineStore('user', {
       if (response.status === 'success') {
         if (response.result) this.user = response.result as User;
         return this.user;
-      } else throw response.message;
+      } else throw new Error(response.message || 'Could not load the current user.');
     },
 
     async fetchSessions(): Promise<Session[]> {

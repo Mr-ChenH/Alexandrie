@@ -16,7 +16,7 @@ import { rerenderImages } from '~/helpers/DOM';
 import { renderMermaidDiagrams } from '~/helpers/mermaid-render';
 import type { Node } from '~/stores';
 
-const props = defineProps<{ node?: Partial<Node> }>();
+const props = defineProps<{ node?: Partial<Node>; interactive?: boolean }>();
 
 const preferences = usePreferencesStore();
 const nodesStore = useNodesStore();
@@ -103,6 +103,7 @@ const handleClick = (event: MouseEvent) => {
 const handleCheckboxChange = (event: Event) => {
   const target = event.target as HTMLInputElement;
   if (!target || target.type !== 'checkbox' || !target.hasAttribute('data-checkbox-index')) return;
+  if (props.interactive === false) return;
   if (!props.node?.content) return;
 
   const checkboxIndex = parseInt(target.getAttribute('data-checkbox-index') || '0', 10);
@@ -124,6 +125,7 @@ const handleCheckboxChange = (event: Event) => {
 
 function runMermaidRender() {
   if (!rootElement.value) return;
+  if (props.interactive === false) rootElement.value.querySelectorAll<HTMLInputElement>('input[type="checkbox"]').forEach(input => { input.disabled = true; });
   renderMermaidDiagrams(rootElement.value, { dark: colorMode.value === 'dark' });
 }
 

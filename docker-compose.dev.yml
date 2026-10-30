@@ -1,5 +1,6 @@
 services:
   frontend:
+    pull_policy: build
     build:
       context: ./frontend
       dockerfile: Dockerfile.dev
@@ -18,6 +19,7 @@ services:
       WATCHPACK_POLLING: true
       CHOKIDAR_INTERVAL: 100
   backend:
+    pull_policy: build
     build:
       context: ./backend
     container_name: alexandrie-backend

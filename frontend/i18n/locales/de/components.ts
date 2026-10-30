@@ -38,11 +38,27 @@ export default {
   },
 
   editor: {
+    autosaveOff: 'Automatisches Speichern aus',
+    autosaveOn: 'Automatisches Speichern an',
+    draftUnavailable: 'Der Entwurf konnte nicht gesichert werden. Vor dem Verlassen speichern.',
+    error: 'Speichern fehlgeschlagen · Entwurf lokal behalten',
+    layout: 'Editoransicht',
+    local: 'Auf diesem Gerät gespeichert · Synchronisierung ausstehend',
     placeholder: {
       description: 'Dokumentbeschreibung',
       title: 'Dokumenttitel',
     },
+    recovery: 'Ein lokaler Entwurf unterscheidet sich von der gespeicherten Notiz. Wähle eine Version.',
+    restoreDraft: 'Entwurf wiederherstellen',
+    retry: 'Erneut versuchen',
+    saved: 'Gespeichert',
+    savePending: 'Warten auf Speichern…',
+    saving: 'Wird gespeichert…',
+    split: 'Geteilte Ansicht',
     title: 'Markdown-Editor',
+    unsaved: 'Ungespeicherte Änderungen',
+    untitled: 'Unbenannte Notiz',
+    useSaved: 'Gespeicherte Notiz verwenden',
   },
 
   filter: {

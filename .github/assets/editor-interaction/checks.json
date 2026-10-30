@@ -1,0 +1,41 @@
+{
+  "results": [
+    {
+      "test": "default split, live Chinese preview and automatic save",
+      "passed": true
+    },
+    {
+      "test": "Ctrl+S reads latest source and compiled HTML synchronously",
+      "passed": true
+    },
+    {
+      "test": "slow requests serialize writes and preserve newest typing",
+      "maxActive": 1
+    },
+    {
+      "test": "HTTP failure is visible, draft survives and retry succeeds",
+      "passed": true
+    },
+    {
+      "test": "offline fallback and reconnect sync",
+      "passed": true
+    },
+    {
+      "test": "leaving editor flushes latest changes",
+      "passed": true
+    },
+    {
+      "test": "switching notes loads the correct independent editor",
+      "passed": true
+    },
+    {
+      "test": "new note creates once, autosaves later edits and keeps focus/route",
+      "passed": true
+    },
+    {
+      "test": "mobile preview is usable without horizontal overflow",
+      "passed": true
+    }
+  ],
+  "errors": []
+}

@@ -38,11 +38,27 @@ export default {
   },
 
   editor: {
+    autosaveOff: '자동 저장 꺼짐',
+    autosaveOn: '자동 저장 켜짐',
+    draftUnavailable: '초안을 보관할 수 없습니다. 페이지를 나가기 전에 저장하세요.',
+    error: '저장 실패 · 로컬 초안 보관됨',
+    layout: '편집기 보기',
+    local: '이 기기에 저장됨 · 동기화 대기 중',
     placeholder: {
       description: '문서 설명',
       title: '문서 제목',
     },
+    recovery: '로컬 초안이 저장된 노트와 다릅니다. 계속 편집할 버전을 선택하세요.',
+    restoreDraft: '초안 복원',
+    retry: '다시 시도',
+    saved: '저장됨',
+    savePending: '저장 대기 중…',
+    saving: '저장 중…',
+    split: '분할 보기',
     title: '마크다운 에디터',
+    unsaved: '저장하지 않은 변경 사항',
+    untitled: '제목 없는 노트',
+    useSaved: '저장된 노트 사용',
   },
 
   filter: {

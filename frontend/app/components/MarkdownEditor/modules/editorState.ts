@@ -16,7 +16,7 @@ export interface CreateEditorStateParams {
   keymaps: readonly KeyBinding[];
   snippetSource: object;
   internalLinks?: ReturnType<typeof createInternalLinks>;
-  onDocChanged: () => void;
+  onDocChanged: (content: string, composing: boolean) => void;
   uploadsHandlers: ReturnType<typeof EditorView.domEventHandlers>;
 }
 
@@ -24,7 +24,7 @@ const themeCompartment = new Compartment();
 
 export function createEditorState(params: CreateEditorStateParams) {
   const updateListener = EditorView.updateListener.of(v => {
-    if (v.docChanged) params.onDocChanged();
+    if (v.docChanged) params.onDocChanged(v.state.doc.toString(), v.view.composing);
   });
   return EditorState.create({
     doc: params.initialDoc,

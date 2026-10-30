@@ -29,9 +29,13 @@ export const useNodesStore = defineStore('nodes', () => {
   const userStore = useUserStore();
   const { sortNodes } = useNodesSort();
 
-  const nodes = shallowRef(new IndexedCollection());
+  // Nuxt serializes the unwrapped value, so mark the collection as well as its ref.
+  const nodes = shallowRef(skipHydrate(new IndexedCollection()));
   const allTags = ref<string[]>([]);
   const isFetching = ref(false);
+  const writes = new Map<string, Promise<Node>>();
+  const localIds = new Map<string, string>();
+  let syncPromise: Promise<void> | undefined;
 
   const getAll = computed(() => nodes.value);
   const getAllTags = computed(() => allTags.value);
@@ -51,7 +55,10 @@ export const useNodesStore = defineStore('nodes', () => {
 
     isFetching.value = true;
     nodes.value.startBulk();
-    await Promise.all([syncLocalDeltas(), fetch(), fetchShared()]);
+    const results = await Promise.allSettled([syncLocalDeltas(), fetch(), fetchShared()]);
+    for (const result of results) {
+      if (result.status === 'rejected') console.warn('[store/nodes] Loading from local changes while the server is unavailable', result.reason);
+    }
     nodes.value.endBulk();
     isFetching.value = false;
     if (import.meta.client) {
@@ -62,26 +69,29 @@ export const useNodesStore = defineStore('nodes', () => {
     }
   }
 
-  async function syncLocalDeltas() {
-    const deltas = await LocalDbService.getDeltas();
-    await LocalDbService.clearDeltas(); // Clear deltas before syncing to avoid duplicates in case of failure & reset counter
-    const corresponding: Record<string, string> = {};
-    for (const delta of deltas) {
-      if (nodes.value.get(delta.id)) nodes.value.delete(delta.id); // Remove the node from the store to ensure a clean state before syncing
-      try {
-        if (delta.action === 'POST') {
-          if (delta.node?.parent_id && corresponding[delta.node.parent_id]) delta.node.parent_id = corresponding[delta.node.parent_id];
-          const res = await post(delta.node!);
-          corresponding[delta.id] = res.id;
-        } else if (delta.action === 'PUT' && delta.node) {
-          await update(delta.node! as Node);
-        } else if (delta.action === 'DELETE') {
-          await remove(delta.id);
+  function syncLocalDeltas(): Promise<void> {
+    if (syncPromise) return syncPromise;
+    syncPromise = (async () => {
+      const deltas = await LocalDbService.getDeltas();
+      for (const pending of deltas) {
+        try {
+          await writes.get(pending.id)?.catch(() => undefined);
+          const delta = await LocalDbService.getDelta(pending.id);
+          if (!delta) continue;
+          if ((delta.action === 'POST' || delta.action === 'PUT') && delta.node) {
+            const node = { ...delta.node, id: delta.id } as Node;
+            if (node.parent_id && localIds.has(node.parent_id)) node.parent_id = localIds.get(node.parent_id);
+            await update(node);
+          } else if (delta.action === 'DELETE') {
+            await remove(delta.id);
+          }
+        } catch (error) {
+          // Retain failed deltas for a later reconnect instead of clearing the queue.
+          console.error(`[store/nodes] Failed to sync delta ${pending.action} for node ${pending.id}:`, error);
         }
-      } catch (error) {
-        console.error(`[store/nodes] Failed to sync delta ${delta.action} for node ${delta.id}:`, error);
       }
-    }
+    })().finally(() => { syncPromise = undefined; });
+    return syncPromise;
   }
 
   function recomputeTags() {
@@ -281,14 +291,16 @@ export const useNodesStore = defineStore('nodes', () => {
     return [];
   }
 
-  async function post(node: Partial<Node>): Promise<DB_Node> {
+  async function post(node: Partial<Node>): Promise<Node> {
+    node = { ...node };
     const oldId = node.id;
     delete node.id;
     if (!node.parent_id) delete node.parent_id; // Ensure parent_id is not sent as empty string
-    const response = await makeRequest<DB_Node>('nodes', 'POST', { ...node, id: undefined });
+    const response = await makeRequest<DB_Node>('nodes', 'POST', { ...node, id: undefined }, { timeout: 15000 });
     if (response.status == 'success') {
-      nodes.value.set((response.result as DB_Node).id, { ...(response.result as DB_Node), partial: false, synced: true, shared: false, permissions: [] }, true);
-      return response.result as DB_Node;
+      const saved = { ...(response.result as DB_Node), partial: false, synced: true, shared: false, permissions: [] };
+      nodes.value.set(saved.id, saved, true);
+      return saved;
     } else if (isNetworkError(response)) {
       node.user_id = userStore.user?.id;
       const localNode = await LocalDbService.saveCreateDelta({ ...node, id: oldId });
@@ -298,7 +310,29 @@ export const useNodesStore = defineStore('nodes', () => {
     throw response.message || 'Failed to create node';
   }
 
-  async function update(node: Node): Promise<void> {
+  function update(input: Node): Promise<Node> {
+    const snapshot = { ...input };
+    const previous = writes.get(snapshot.id);
+    const next = (previous ? previous.catch(() => undefined) : Promise.resolve()).then(() => persistUpdate(snapshot));
+    writes.set(snapshot.id, next);
+    void next.finally(() => {
+      if (writes.get(snapshot.id) === next) writes.delete(snapshot.id);
+    }).catch(() => undefined);
+    return next;
+  }
+
+  async function persistUpdate(node: Node): Promise<Node> {
+    if (localIds.has(node.id)) node.id = localIds.get(node.id)!;
+    const pending = await LocalDbService.getDelta(node.id);
+    if (pending?.action === 'POST') {
+      const saved = await post(node);
+      if (saved.synced) {
+        localIds.set(node.id, saved.id);
+        nodes.value.delete(node.id);
+        await LocalDbService.removeDelta(node.id);
+      }
+      return saved;
+    }
     if (node.partial) {
       console.debug('[store/nodes] Node looks partial, cannot update it directly.');
       const full_node = await fetch({ id: node.id });
@@ -306,18 +340,23 @@ export const useNodesStore = defineStore('nodes', () => {
       node = mergeNode(node, full_node);
     }
     if (!node.parent_id) delete node.parent_id; // Ensure parent_id is not sent as empty string
-    const response = await makeRequest(`nodes/${node.id}`, 'PUT', node);
+    const response = await makeRequest(`nodes/${node.id}`, 'PUT', node, { timeout: 15000 });
     if (response.status == 'success') {
       node.updated_timestamp = Date.now(); // approximate update time for better UX & backups import
       node.synced = true;
       if (node.parent_id && !nodes.value.has(node.parent_id)) node.parent_id = ''; // Check for orphaned parent_id and detach if necessary
       nodes.value.set(node.id, node, true);
+      await LocalDbService.removeDelta(node.id);
     } else if (isNetworkError(response)) {
-      await LocalDbService.saveUpdateDelta(node);
       node.synced = false;
+      node.updated_timestamp = Date.now();
+      await LocalDbService.saveUpdateDelta(node);
       nodes.value.set(node.id, node, true);
+    } else {
+      throw new Error(response.message || 'Could not save document');
     }
     nodes.value.rebuildIndexes();
+    return node;
   }
 
   async function duplicate(node: Node): Promise<DB_Node> {
@@ -346,9 +385,11 @@ export const useNodesStore = defineStore('nodes', () => {
   async function remove(id: string) {
     const response = await makeRequest(`nodes/${id}`, 'DELETE', {});
     if (response.status == 'success') {
-      //
+      await LocalDbService.removeDelta(id);
     } else if (isNetworkError(response)) {
       await LocalDbService.saveDeleteDelta(id);
+    } else {
+      throw new Error(response.message || 'Could not delete document');
     }
     const allChildrens = getDescendantIds(id);
     nodes.value.delete(id);
@@ -404,6 +445,7 @@ export const useNodesStore = defineStore('nodes', () => {
     search,
     init,
     recomputeTags,
+    syncLocalDeltas,
     fetch,
     fetchShared,
     searchFulltext,

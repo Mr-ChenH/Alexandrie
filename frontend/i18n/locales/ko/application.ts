@@ -1,4 +1,9 @@
 export default {
+  connection: {
+    localDataKept: "로컬 노트와 초안은 유지됩니다. 서버가 복구되면 로그인 및 동기화를 다시 사용할 수 있습니다.",
+    retry: "다시 연결",
+    unavailable: "서버에 연결할 수 없습니다",
+  },
   shortcuts: {
     boldText: '굵게',
     bulletList: '글머리 기호 목록',

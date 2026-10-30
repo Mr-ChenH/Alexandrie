@@ -1,0 +1,14 @@
+.git
+.env
+.env.*
+node_modules
+.nuxt
+.output
+.cache
+dist
+coverage
+*.log
+*.tsbuildinfo
+.DS_Store
+Dockerfile*
+.dockerignore

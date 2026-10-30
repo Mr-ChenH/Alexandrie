@@ -1,7 +1,8 @@
 #!/bin/sh
-echo "Building application with current environment variables..."
-echo "API: $NUXT_PUBLIC_BASE_API"
-echo "CDN: $NUXT_PUBLIC_BASE_CDN"
-echo "URL: $NUXT_PUBLIC_BASE_URL"
-echo "Starting Nitro server..."
-exec node .output/server/index.mjs
+set -eu
+
+# Apply the deployment URLs to the PWA worker without rebuilding the app.
+node /app/docker-runtime-config.mjs
+
+echo "Starting Alexandrie on ${HOST:-0.0.0.0}:${PORT:-8200}..."
+exec node /app/.output/server/index.mjs

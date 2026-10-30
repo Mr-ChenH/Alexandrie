@@ -1,9 +1,10 @@
 import type { Node, PublicUser, User } from '~/stores';
+import { resolveApiBase } from '~/helpers/api-base';
 
 export function useApi() {
   const config = useRuntimeConfig();
   const CDN = config.public.baseCdn;
-  const API = `${config.public.baseApi}/api`;
+  const API = resolveApiBase(config.public.baseApi, config.baseApiInternal, import.meta.server);
   const cdnEndpoint = config.public.cdnEndpoint || '';
 
   function avatarURL(user?: User | PublicUser | null): string {

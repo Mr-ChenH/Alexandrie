@@ -14,10 +14,8 @@ export default defineNuxtConfig({
         lang: 'en',
       },
       link: [
-        {
-          href: '/manifest.webmanifest',
-          rel: 'manifest',
-        },
+        // The PWA plugin serves the generated manifest in production only.
+        ...(process.env.NODE_ENV === 'production' ? [{ href: '/manifest.webmanifest', rel: 'manifest' as const }] : []),
         {
           href: '/favicon-dark.ico',
           media: '(prefers-color-scheme: dark)',
@@ -152,7 +150,7 @@ export default defineNuxtConfig({
     strategy: 'prefix_except_default',
     skipSettingLocaleOnNavigate: true,
 
-    baseUrl: import.meta.env.NUXT_PUBLIC_BASE_URL,
+    baseUrl: '',
     pages: {
       'dashboard/index': false,
       'dashboard/[...all]': false,
@@ -175,8 +173,11 @@ export default defineNuxtConfig({
    ************************ Runetime config ************************
    */
   runtimeConfig: {
+    // Used only by Nitro inside Docker; never sent to the browser.
+    baseApiInternal: '',
     public: {
       // Base URLs
+      baseUrl: '',
       baseApi: '',
       baseCdn: '',
       cdnEndpoint: '/alexandrie/',
@@ -330,6 +331,9 @@ export default defineNuxtConfig({
    */
 
   vite: {
+    // Pinia's payload reducer and stores must share the same hydration symbols.
+    resolve: { dedupe: ['pinia'] },
+    ssr: { noExternal: ['pinia'] },
     css: {
       preprocessorOptions: {
         scss: {
@@ -338,9 +342,9 @@ export default defineNuxtConfig({
       },
     },
     define: {
-      __BASE_URL__: JSON.stringify(import.meta.env.NUXT_PUBLIC_BASE_URL || ''),
-      __BASE_CDN__: JSON.stringify(import.meta.env.NUXT_PUBLIC_BASE_CDN || ''),
-      __BASE_API__: JSON.stringify(import.meta.env.NUXT_PUBLIC_BASE_API || ''),
+      // The container entrypoint substitutes public origins in sw.js at startup.
+      __BASE_CDN__: JSON.stringify('__ALEXANDRIE_CDN_ORIGIN__'),
+      __BASE_API__: JSON.stringify('__ALEXANDRIE_API_ORIGIN__'),
     },
     plugins: [
       createSvgIconsPlugin({
